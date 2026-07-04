@@ -1,0 +1,14 @@
+---
+description: リサーチまとめサイト(research-site/)の実装ルール
+globs: research-site/**
+alwaysApply: false
+---
+
+# リサーチまとめサイトのルール
+
+- 目的は「`docs/research/` の内容を見やすく閲覧すること」。凝った機能より読みやすさを優先する
+- コンテンツの源泉は `docs/research/` のMarkdown。サイト側に独自の事実を書き足さない
+- 構成はシンプルに保つ(ビルド不要の静的HTML/CSS/JS、またはVite程度まで)
+- リサーチが増えたら一覧ページ・目次に反映する(`/research-site` で再生成)
+- 出典リンクはサイト上でも辿れるようにする
+- スマホでも読めるレスポンシブ対応を入れる
