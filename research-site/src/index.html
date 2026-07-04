@@ -11,12 +11,13 @@
       id="appRoot"
       class="page-shell"
       data-csv-url="https://docs.google.com/spreadsheets/d/1YJvTTgZVr9lKFffyKpsqkbbNWuNzyMDlao0iZhgF8t0/export?format=csv&amp;gid=0"
+      data-api-url="__RESEARCH_SITE_DATA_API_URL__"
     >
       <header class="site-header">
         <div class="site-header__text">
           <p class="eyebrow">Research Archive</p>
           <h1>リサーチまとめサイト</h1>
-          <p class="lead">Google スプレッドシートの公開CSVを読み込んで表示する事例一覧です。</p>
+          <p class="lead">Google スプレッドシートのデータを中継API経由で読み込み、全事例を一覧表示します。</p>
         </div>
         <dl class="data-meta" aria-label="データ取得情報">
           <div>
@@ -25,30 +26,13 @@
           </div>
           <div>
             <dt>データ</dt>
-            <dd><a id="csvLink" href="#" target="_blank" rel="noreferrer">公開CSV</a></dd>
+            <dd><a id="csvLink" href="#" target="_blank" rel="noreferrer">中継API</a></dd>
           </div>
         </dl>
       </header>
 
-      <section class="filters" aria-label="事例の絞り込み">
-        <label class="field field--search">
-          <span>キーワード</span>
-          <input id="keywordSearch" type="search" autocomplete="off" placeholder="タイトル・概要・URLなど" />
-        </label>
-        <label class="field">
-          <span>国・地域</span>
-          <select id="regionFilter">
-            <option value="">すべて</option>
-          </select>
-        </label>
-        <label class="field">
-          <span>カテゴリ</span>
-          <select id="categoryFilter">
-            <option value="">すべて</option>
-          </select>
-        </label>
+      <section class="data-actions" aria-label="データ操作">
         <button id="reloadData" class="reload-button" type="button">再取得</button>
-        <button id="resetFilters" class="reset-button" type="button">絞り込み解除</button>
       </section>
 
       <section class="result-summary" aria-live="polite">

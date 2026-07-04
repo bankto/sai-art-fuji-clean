@@ -37,6 +37,8 @@ jobs:
 
       - name: Build research site
         run: npm run build
+        env:
+          RESEARCH_SITE_DATA_API_URL: ${{ vars.RESEARCH_SITE_DATA_API_URL }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4

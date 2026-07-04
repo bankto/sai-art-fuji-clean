@@ -2,21 +2,17 @@ const DEFAULT_CSV_URL =
   'https://docs.google.com/spreadsheets/d/1YJvTTgZVr9lKFffyKpsqkbbNWuNzyMDlao0iZhgF8t0/export?format=csv&gid=0';
 const AUTO_REFRESH_MS = 5 * 60 * 1000;
 const THUMBNAIL_TIMEOUT_MS = 4500;
-const EXPECTED_COLUMNS = ['国&地域', 'タイトル', 'URL', '概要', 'カテゴリ'];
 
 const root = document.querySelector('#appRoot');
 const csvUrl = root?.dataset.csvUrl || DEFAULT_CSV_URL;
+const apiUrl = cleanConfiguredUrl(root?.dataset.apiUrl || '');
 const thumbnailCache = new Map();
 
 let records = [];
 let loading = false;
 
 const elements = {
-  keyword: document.querySelector('#keywordSearch'),
-  region: document.querySelector('#regionFilter'),
-  category: document.querySelector('#categoryFilter'),
   reload: document.querySelector('#reloadData'),
-  reset: document.querySelector('#resetFilters'),
   resultCount: document.querySelector('#resultCount'),
   loadStatus: document.querySelector('#loadStatus'),
   lastFetched: document.querySelector('#lastFetched'),
@@ -29,24 +25,11 @@ const elements = {
 initialize();
 
 function initialize() {
-  elements.csvLink.href = csvUrl;
-  refreshFilterOptions();
-
-  [elements.keyword, elements.region, elements.category].forEach((element) => {
-    element.addEventListener('input', render);
-    element.addEventListener('change', render);
-  });
+  elements.csvLink.href = apiUrl || csvUrl;
+  elements.csvLink.textContent = apiUrl ? '中継API' : '公開CSV';
 
   elements.reload.addEventListener('click', () => {
     loadRecords({ silent: false });
-  });
-
-  elements.reset.addEventListener('click', () => {
-    elements.keyword.value = '';
-    elements.region.value = '';
-    elements.category.value = '';
-    render();
-    elements.keyword.focus();
   });
 
   render();
@@ -62,21 +45,26 @@ async function loadRecords({ silent = false } = {}) {
   loading = true;
   elements.reload.disabled = true;
   if (!silent) {
-    setStatus('公開CSVを取得しています。');
+    setStatus('中継APIからデータを取得しています。');
   }
   render();
 
   let statusMessage = elements.loadStatus.textContent;
   let statusIsError = false;
   try {
-    const csv = await fetchCsv(csvUrl);
-    records = normalizeRecords(parseCsv(csv));
-    refreshFilterOptions();
+    if (!apiUrl) {
+      throw new Error('Apps Script API URL is not configured.');
+    }
+
+    const payload = await fetchDataApi(apiUrl);
+    records = normalizeApiRecords(payload);
     updateFetchedAt(new Date());
     statusMessage = `${records.length}件を取得しました。`;
   } catch (error) {
-    console.error('Failed to load CSV.', error);
-    statusMessage = 'CSVを取得できませんでした。公開設定またはCORSを確認してください。';
+    console.error('Failed to load data.', error);
+    statusMessage = apiUrl
+      ? 'データを取得できませんでした。中継APIのURLと公開設定を確認してください。'
+      : '中継APIのURLが未設定です。READMEのApps Script設定手順を確認してください。';
     statusIsError = true;
   } finally {
     loading = false;
@@ -86,12 +74,17 @@ async function loadRecords({ silent = false } = {}) {
   }
 }
 
-async function fetchCsv(url) {
-  const response = await fetch(cacheBustedUrl(url), { cache: 'no-store' });
-  if (!response.ok) {
-    throw new Error(`CSV fetch failed with HTTP ${response.status}.`);
+async function fetchDataApi(url) {
+  try {
+    const response = await fetch(cacheBustedUrl(url), { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`API fetch failed with HTTP ${response.status}.`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.warn('Falling back to JSONP for the data API.', error);
+    return fetchJsonp(url);
   }
-  return response.text();
 }
 
 function cacheBustedUrl(url) {
@@ -100,100 +93,69 @@ function cacheBustedUrl(url) {
   return nextUrl.toString();
 }
 
-function parseCsv(text) {
-  const rows = [];
-  let row = [];
-  let cell = '';
-  let quoted = false;
+function fetchJsonp(url) {
+  return new Promise((resolve, reject) => {
+    const callbackName = `__researchSiteData_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const script = document.createElement('script');
+    const timeout = window.setTimeout(() => {
+      cleanup();
+      reject(new Error('JSONP request timed out.'));
+    }, 15000);
 
-  for (let index = 0; index < text.length; index += 1) {
-    const char = text[index];
-
-    if (quoted) {
-      if (char === '"') {
-        if (text[index + 1] === '"') {
-          cell += '"';
-          index += 1;
-        } else {
-          quoted = false;
-        }
-      } else {
-        cell += char;
-      }
-      continue;
+    function cleanup() {
+      window.clearTimeout(timeout);
+      script.remove();
+      delete window[callbackName];
     }
 
-    if (char === '"') {
-      quoted = true;
-      continue;
-    }
+    window[callbackName] = (payload) => {
+      cleanup();
+      resolve(payload);
+    };
 
-    if (char === ',') {
-      row.push(cell);
-      cell = '';
-      continue;
-    }
-
-    if (char === '\r') {
-      row.push(cell);
-      rows.push(row);
-      row = [];
-      cell = '';
-      if (text[index + 1] === '\n') {
-        index += 1;
-      }
-      continue;
-    }
-
-    if (char === '\n') {
-      row.push(cell);
-      rows.push(row);
-      row = [];
-      cell = '';
-      continue;
-    }
-
-    cell += char;
-  }
-
-  if (cell.length > 0 || row.length > 0) {
-    row.push(cell);
-    rows.push(row);
-  }
-
-  return rows.filter((currentRow) => currentRow.some((value) => normalizeCell(value)));
+    script.onerror = () => {
+      cleanup();
+      reject(new Error('JSONP request failed.'));
+    };
+    script.src = withQueryParams(url, {
+      callback: callbackName,
+      _: Date.now().toString(),
+    });
+    document.head.appendChild(script);
+  });
 }
 
-function normalizeRecords(rows) {
-  const headerIndex = rows.findIndex((row) => {
-    const normalized = row.map(normalizeHeader);
-    return normalized.includes('タイトル') && normalized.includes('URL');
+function withQueryParams(url, params) {
+  const nextUrl = new URL(url, window.location.href);
+  Object.entries(params).forEach(([key, value]) => {
+    nextUrl.searchParams.set(key, value);
   });
+  return nextUrl.toString();
+}
 
-  if (headerIndex === -1) {
-    console.warn('CSV header row was not found.');
-    return [];
+function normalizeApiRecords(payload) {
+  if (payload?.ok === false) {
+    throw new Error(payload.error || 'Data API returned an error.');
   }
 
-  const headers = rows[headerIndex].map(normalizeHeader);
-  const missingColumns = EXPECTED_COLUMNS.filter((column) => !headers.includes(column));
-  if (missingColumns.length > 0) {
-    console.warn(`Missing expected columns: ${missingColumns.join(', ')}`);
+  const rawRecords = Array.isArray(payload) ? payload : payload?.records;
+  if (!Array.isArray(rawRecords)) {
+    throw new Error('Data API response does not contain records.');
   }
 
-  return rows
-    .slice(headerIndex + 1)
-    .map((row, index) => {
-      const sourceText = pick(row, headers, 'URL');
+  return rawRecords
+    .map((record, index) => {
+      const sourceText = text(pickObject(record, 'sourceText', 'url', 'URL'));
+      const urls = Array.isArray(record.urls) ? record.urls.map(normalizeUrlEntry) : splitSourceUrls(sourceText);
       return {
-        id: `case-${index + 1}`,
-        region: pick(row, headers, '国&地域', '国・地域'),
-        title: pick(row, headers, 'タイトル'),
+        id: text(record.id) || `case-${index + 1}`,
+        region: text(pickObject(record, 'region', '国&地域', '国・地域')),
+        title: text(pickObject(record, 'title', 'タイトル')),
         sourceText,
-        urls: splitSourceUrls(sourceText),
-        summary: pick(row, headers, '概要'),
-        category: pick(row, headers, 'カテゴリ'),
-        verification: pick(row, headers, '検証状態'),
+        urls,
+        summary: text(pickObject(record, 'summary', '概要')),
+        category: text(pickObject(record, 'category', 'カテゴリ')),
+        verification: text(pickObject(record, 'verification', '検証状態')),
       };
     })
     .filter((record) =>
@@ -204,36 +166,16 @@ function normalizeRecords(rows) {
 }
 
 function render() {
-  const filteredRecords = filterRecords();
   const fragment = document.createDocumentFragment();
 
-  filteredRecords.forEach((record) => {
+  records.forEach((record) => {
     fragment.appendChild(createCard(record));
   });
 
   elements.list.replaceChildren(fragment);
-  elements.empty.hidden = filteredRecords.length !== 0;
-  elements.empty.textContent = records.length === 0 ? '表示できる事例がありません。' : '条件に一致する事例がありません。';
-  elements.resultCount.textContent = loading
-    ? '読み込み中'
-    : `${records.length}件中 ${filteredRecords.length}件を表示`;
-}
-
-function filterRecords() {
-  const keyword = normalizeForSearch(elements.keyword.value);
-  const region = elements.region.value;
-  const category = elements.category.value;
-
-  return records.filter((record) => {
-    const matchesRegion = !region || record.region === region;
-    const matchesCategory = !category || record.category === category;
-    const searchTarget = normalizeForSearch(
-      [record.title, record.region, record.summary, record.category, record.sourceText, record.verification].join(' '),
-    );
-    const matchesKeyword = !keyword || searchTarget.includes(keyword);
-
-    return matchesRegion && matchesCategory && matchesKeyword;
-  });
+  elements.empty.hidden = records.length !== 0;
+  elements.empty.textContent = '表示できる事例がありません。';
+  elements.resultCount.textContent = loading ? '読み込み中' : `${records.length}件を表示中`;
 }
 
 function createCard(record) {
@@ -365,6 +307,13 @@ function normalizeImageUrl(value, baseUrl) {
 }
 
 function normalizeUrlEntry(url) {
+  if (typeof url === 'string') {
+    return {
+      raw: url.trim(),
+      href: normalizeHref(url),
+    };
+  }
+
   return {
     raw: text(url.raw),
     href: text(url.href),
@@ -377,25 +326,6 @@ function labelForUrl(href) {
   } catch {
     return href;
   }
-}
-
-function refreshFilterOptions() {
-  fillSelect(elements.region, uniqueValues('region'), elements.region.value);
-  fillSelect(elements.category, uniqueValues('category'), elements.category.value);
-}
-
-function fillSelect(select, values, currentValue = '') {
-  select.replaceChildren(new Option('すべて', ''));
-  values.forEach((value) => {
-    select.appendChild(new Option(value, value));
-  });
-  select.value = values.includes(currentValue) ? currentValue : '';
-}
-
-function uniqueValues(field) {
-  return [...new Set(records.map((record) => record[field]).filter(Boolean))].sort((a, b) =>
-    a.localeCompare(b, 'ja'),
-  );
 }
 
 function setText(root, selector, value) {
@@ -425,19 +355,6 @@ function normalizeHref(raw) {
   }
 }
 
-function pick(row, headers, ...names) {
-  const index = names.map((name) => headers.indexOf(name)).find((currentIndex) => currentIndex >= 0);
-  return index === undefined ? '' : normalizeCell(row[index] || '');
-}
-
-function normalizeHeader(value) {
-  return normalizeCell(value).replace(/^\uFEFF/, '');
-}
-
-function normalizeCell(value = '') {
-  return String(value).replace(/\r\n/g, '\n').trim();
-}
-
 function setStatus(message, isError = false) {
   elements.loadStatus.textContent = message;
   elements.loadStatus.classList.toggle('is-error', isError);
@@ -453,8 +370,13 @@ function updateFetchedAt(date) {
   elements.lastFetched.textContent = label;
 }
 
-function normalizeForSearch(value) {
-  return text(value).normalize('NFKC').toLocaleLowerCase('ja-JP');
+function cleanConfiguredUrl(value) {
+  const nextValue = text(value);
+  return nextValue.startsWith('__') ? '' : nextValue;
+}
+
+function pickObject(object, ...names) {
+  return names.map((name) => object?.[name]).find((value) => value != null) || '';
 }
 
 function text(value) {

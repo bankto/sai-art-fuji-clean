@@ -34,9 +34,7 @@ a {
   text-underline-offset: 0.18em;
 }
 
-button,
-input,
-select {
+button {
   font: inherit;
 }
 
@@ -106,58 +104,21 @@ h1 {
   font-size: 0.9rem;
 }
 
-.filters {
+.data-actions {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(150px, 210px) minmax(150px, 210px) auto auto;
+  justify-content: start;
   gap: 14px;
   align-items: end;
   margin: 24px 0 12px;
-  padding: 18px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-card);
 }
 
-.field {
-  display: grid;
-  gap: 7px;
-}
-
-.field span {
-  color: var(--color-muted);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-input,
-select {
-  width: 100%;
-  min-height: 44px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: #ffffff;
-  color: var(--color-text);
-}
-
-input {
-  padding: 0 13px;
-}
-
-select {
-  padding: 0 34px 0 12px;
-}
-
-input:focus,
-select:focus,
 button:focus-visible,
 a:focus-visible {
   outline: 3px solid rgba(15, 107, 87, 0.22);
   outline-offset: 2px;
 }
 
-.reload-button,
-.reset-button {
+.reload-button {
   min-height: 44px;
   padding: 0 16px;
   border: 1px solid var(--color-accent);
@@ -176,10 +137,6 @@ a:focus-visible {
 
 .reload-button:hover {
   background: var(--color-accent-soft);
-}
-
-.reset-button:hover {
-  background: #0b5848;
 }
 
 .result-summary {
@@ -346,15 +303,6 @@ a:focus-visible {
     min-width: 0;
   }
 
-  .filters {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .field--search,
-  .reload-button,
-  .reset-button {
-    grid-column: 1 / -1;
-  }
 }
 
 @media (max-width: 560px) {
@@ -367,13 +315,8 @@ a:focus-visible {
     padding-bottom: 18px;
   }
 
-  .data-meta div,
-  .filters {
+  .data-meta div {
     grid-template-columns: 1fr;
-  }
-
-  .filters {
-    padding: 14px;
   }
 
   .case-list {
