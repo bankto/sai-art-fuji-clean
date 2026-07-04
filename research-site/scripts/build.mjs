@@ -13,6 +13,7 @@ async function main() {
   await fs.rm(outDir, { recursive: true, force: true });
   await fs.mkdir(outDir, { recursive: true });
   await fs.cp(srcDir, outDir, { recursive: true });
+  await fs.writeFile(path.join(outDir, '.nojekyll'), '');
   console.log(`Output: ${path.relative(process.cwd(), outDir)}`);
   console.log('CSV data is fetched by the browser at page load.');
 }

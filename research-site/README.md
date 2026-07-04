@@ -41,12 +41,31 @@ npm run build
 - `dist/styles.css`: スタイル
 - `dist/app.js`: 検索・絞り込み用JS
 
+## GitHub Pages 公開
+
+このリポジトリでは GitHub Actions で GitHub Pages にデプロイします。
+
+- workflow: `.github/workflows/pages.yml`
+- build working directory: `research-site/`
+- build command: `npm run build`
+- deploy target: `research-site/dist/`
+
+`main` ブランチへ `research-site/**` または `.github/workflows/pages.yml` の変更を push すると、Actions が `research-site/` でビルドし、`research-site/dist/` を Pages artifact としてアップロードしてデプロイします。手動実行は GitHub Actions の `Deploy research site to GitHub Pages` から `workflow_dispatch` で実行できます。
+
+初回だけ GitHub 側で以下を確認してください。
+
+1. Repository Settings → Pages を開く
+2. Build and deployment の Source を `GitHub Actions` にする
+3. Actions の実行権限と Pages のデプロイ権限が有効になっていることを確認する
+
+GitHub Pages の project page、つまり `https://<user>.github.io/<repo>/` でも動くように、HTML内のCSS/JS参照は `./styles.css` と `./app.js` の相対パスのままにしています。base path の追加設定は不要です。
+
 ## シート更新後の反映
 
 1. Google スプレッドシートを更新する
 2. 公開CSVに更新が反映されたことを確認する
 3. ページを再読み込みする、または画面の「再取得」ボタンを押す
 
-データ更新だけなら再ビルドは不要です。HTML/CSS/JSを変更した場合だけ `npm run build` を実行してください。
+データ更新だけなら再ビルドや再デプロイは不要です。HTML/CSS/JSを変更した場合だけ push して GitHub Actions で再デプロイします。
 
 ページ上で `CSVを取得できませんでした` と表示される場合は、スプレッドシートの共有またはウェブ公開設定でCSVを匿名アクセスできない状態、またはブラウザのCORS制約で取得できない状態です。公開CSV URLをブラウザのシークレットウィンドウで開ける状態にしてから再読み込みしてください。
