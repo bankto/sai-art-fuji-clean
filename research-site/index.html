@@ -1,56 +1,69 @@
 <!doctype html>
 <html lang="ja">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>リサーチまとめサイト</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="./styles.css" />
-</head>
-<body>
-<main id="appRoot" class="page-shell" data-api-url="__RESEARCH_SITE_DATA_API_URL__">
-  <header class="site-header">
-    <div class="site-header__inner">
-      <h1 class="site-header__title">リサーチまとめサイト</h1>
-      <p class="lead">スプレッドシートのデータを読み込み、全事例を一覧表示します。</p>
-      <dl class="data-meta">
-        <div class="data-meta__row">
-          <dt>最終取得</dt>
-          <dd><time id="lastFetched">未取得</time></dd>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>リサーチまとめサイト</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main
+      id="appRoot"
+      class="page-shell"
+      data-api-url="__RESEARCH_SITE_DATA_API_URL__"
+    >
+      <header class="site-header">
+        <div class="site-header__inner">
+          <h1 class="site-header__title">リサーチまとめサイト</h1>
+          <p class="lead">
+            スプレッドシートのデータを読み込み、事例を一覧表示します。
+          </p>
+          <dl class="data-meta">
+            <div class="data-meta__row">
+              <dt>最終取得</dt>
+              <dd><time id="lastFetched">未取得</time></dd>
+            </div>
+          </dl>
         </div>
-      </dl>
-    </div>
-  </header>
+      </header>
 
-  <section class="data-actions">
-    <button id="reloadData" type="button" class="btn btn--primary">再取得</button>
-  </section>
+      <section class="data-actions">
+        <button id="reloadData" type="button" class="btn btn--primary">
+          再取得
+        </button>
+      </section>
 
-  <section class="result-summary" aria-live="polite">
-    <p id="resultCount" class="result-summary__count"></p>
-    <p id="loadStatus" class="load-status"></p>
-  </section>
+      <section class="result-summary" aria-live="polite">
+        <p id="resultCount" class="result-summary__count"></p>
+        <p id="loadStatus" class="load-status"></p>
+      </section>
 
-  <section id="caseList" class="case-list" aria-label="事例一覧"></section>
+      <section id="caseList" class="case-list" aria-label="事例一覧"></section>
 
-  <p id="emptyState" class="empty-state" hidden>表示できる事例がありません。</p>
-</main>
+      <p id="emptyState" class="empty-state" hidden>
+        表示できる事例がありません。
+      </p>
+    </main>
 
-<template id="caseCardTemplate">
-  <article class="case-item">
-    <div class="case-item__links" data-field="links"></div>
-    <h2 class="case-item__title" data-field="title"></h2>
-    <p class="case-item__summary" data-field="summary"></p>
-    <p class="case-item__meta">
-      <span data-field="region"></span>
-      <span class="case-item__meta-sep" aria-hidden="true"> · </span>
-      <span data-field="category"></span>
-    </p>
-  </article>
-</template>
+    <template id="caseCardTemplate">
+      <article class="case-item">
+        <div class="case-item__links" data-field="links"></div>
+        <h2 class="case-item__title" data-field="title"></h2>
+        <p class="case-item__summary" data-field="summary"></p>
+        <p class="case-item__meta">
+          <span data-field="region"></span>
+          <span class="case-item__meta-sep" aria-hidden="true"> · </span>
+          <span data-field="category"></span>
+        </p>
+      </article>
+    </template>
 
-<script src="./app.js" defer></script>
-</body>
+    <script src="./app.js" defer></script>
+  </body>
 </html>
