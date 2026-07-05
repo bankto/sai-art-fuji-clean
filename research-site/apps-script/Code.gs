@@ -22,10 +22,6 @@ function buildPayload_() {
     return {
       ok: true,
       generatedAt: new Date().toISOString(),
-      source: {
-        spreadsheetId: SPREADSHEET_ID,
-        sheetGid: SHEET_GID,
-      },
       records: normalizeRecords_(values),
     };
   } catch (error) {
@@ -60,19 +56,15 @@ function normalizeRecords_(rows) {
       const sourceText = pick_(row, headers, 'URL');
       return {
         id: `case-${index + 1}`,
-        region: pick_(row, headers, '国&地域', '国・地域'),
         title: pick_(row, headers, 'タイトル'),
-        sourceText,
-        urls: splitSourceUrls_(sourceText),
-        summary: pick_(row, headers, '概要'),
+        summary: pick_(row, headers, 'summary', 'Summary', '概要'),
+        region: pick_(row, headers, '国&地域', '国・地域'),
         category: pick_(row, headers, 'カテゴリ'),
-        verification: pick_(row, headers, '検証状態'),
+        urls: splitSourceUrls_(sourceText),
       };
     })
     .filter((record) => {
-      return [record.region, record.title, record.sourceText, record.summary, record.category, record.verification].some(
-        Boolean,
-      );
+      return [record.title, record.summary, record.region, record.category].some(Boolean) || record.urls.length > 0;
     });
 }
 

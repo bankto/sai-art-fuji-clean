@@ -1,6 +1,6 @@
 # 進行状況ダッシュボード
 
-最終更新: 2026-07-04
+最終更新: 2026-07-05
 
 ## 現在のフェーズ
 
@@ -11,7 +11,7 @@
 | フェーズ | 担当 | 状態 | 成果物 | メモ |
 |---|---|---|---|---|
 | 1. リサーチ | Claude Code + Codex(並走) | 進行中 | `docs/research/2026-07-02_廃棄物クリエイティブ事例/`(主) + `_codex/`(並走) | 本格モード。03完了、01/02への反映済み。`04_decision.md` / `05_next_actions.md` 初版と seed CSV 作成済み。残り: シート反映→必要なら境界線上事例を追加 |
-| 2. まとめサイト | Codex | 進行中 | `research-site/` + `.github/workflows/pages.yml` | GitHub Pages公開済み。Apps Script中継APIでシートデータを取得し、検索/絞り込みなしで全件カード一覧表示する構成へ変更済み |
+| 2. まとめサイト | Codex | 進行中 | `research-site/` + `.github/workflows/pages.yml` | 添付デザイン3ファイルを本体化。ActionsでAPI URLを置換してGitHub Pagesへ静的配信する構成へ変更済み |
 | 3. アイデア出し | 任意のAI | 未着手 | - | |
 | 4. 仕様書作成 | Codex / Claude Code | 未着手 | - | |
 | 5. 実装 | Codex / Claude Code | 未着手 | - | |
@@ -38,10 +38,12 @@
 - [x] Phase 2 着手(`/research-site`): シートをDBとした一覧サイトを構築
 - [x] Phase 2 初期構築: `research-site/` にCSV取得・検索/絞り込みUI・READMEを作成
 - [x] Phase 2 要件変更対応: ビルド時取得ではなく、ブラウザ表示時に公開CSVを取得する方式へ変更。カード一覧、サムネイル自動取得試行、5分間隔の自動再取得を追加
-- [x] Phase 2 GitHub Pages公開対応: `.github/workflows/pages.yml` を追加し、`research-site/` でビルドした `research-site/dist/` をGitHub PagesへデプロイするActions構成にした。`research-site/src/.nojekyll` とREADMEの公開手順も追加
+- [x] Phase 2 GitHub Pages公開対応: `.github/workflows/pages.yml` を追加し、`research-site/index.html` / `styles.css` / `app.js` をActions内の `public/` にコピーしてGitHub Pagesへデプロイする構成にした
 - [x] Phase 2 公開サイト取得エラー切り分け: 公開CSVへの直接HTTP確認は401かつCORS許可ヘッダなし。GitHub Pages上のブラウザfetchでは失敗しうるため、直接CSV fetchを廃止
 - [x] Phase 2 中継API対応: `research-site/apps-script/Code.gs` を追加し、Apps Script Web Appがシートを読みJSON/JSONPを返す構成を用意。サイト側は `RESEARCH_SITE_DATA_API_URL` から中継API URLを受け取り、カード一覧へ流し込む
 - [x] Phase 2 UI仕様変更: キーワード検索、国・地域フィルタ、カテゴリフィルタ、絞り込み解除を削除。取得後は全件をカード一覧で表示し、再取得と最終取得表示だけを残す
+- [x] Phase 2 本番仕上げ: 添付デザインの `index.html` / `styles.css` / `app.js` を `research-site/` 直下の本体にし、npm build不要の3ファイル構成へ変更。GitHub Actionsで `RESEARCH_SITE_DATA_API_URL` を置換してPagesへ配信する方式に整理
+- [x] Phase 2 GASレスポンス調整: `research-site/apps-script/Code.gs` を `ok` / `generatedAt` / `records` 形式に合わせ、`records[]` は `id` / `title` / `summary` / `region` / `category` / `urls` を返すよう更新
 - [ ] Phase 2 実データ取得確認: Apps Script Web Appをデプロイし、GitHub Actions Variable `RESEARCH_SITE_DATA_API_URL` にURLを設定後、公開サイトで取得確認する
 - [x] Phase 2 GitHub Pages本番確認: GitHub Pagesへのデプロイ成功を確認済み(ユーザー報告)。残る問題は公開サイト上のデータ取得
 

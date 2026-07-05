@@ -1,0 +1,269 @@
+/* ---------- Reset & base ---------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: #2e2e32;
+  font-family: "Noto Sans JP", "游ゴシック体", "Yu Gothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+/* ---------- Page shell ---------- */
+.page-shell {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 20px 96px;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  margin: 0 -20px 8px;
+  padding: 0 20px;
+  background: linear-gradient(180deg, rgba(110, 91, 149, 0.06) 0%, rgba(110, 91, 149, 0) 100%);
+  border-bottom: 1px solid #e6e6ea;
+}
+
+.site-header__inner {
+  padding: 48px 0 28px;
+  position: relative;
+}
+
+.site-header__title {
+  margin: 0 0 10px;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #2e2e32;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #8b7ba8;
+  display: inline-block;
+}
+
+.lead {
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: #909098;
+  max-width: 46em;
+}
+
+.data-meta {
+  margin: 16px 0 0;
+}
+
+.data-meta__row {
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+  color: #909098;
+}
+
+.data-meta dt {
+  font-weight: 500;
+}
+
+.data-meta dd {
+  margin: 0;
+}
+
+/* ---------- Actions ---------- */
+.data-actions {
+  padding: 20px 0 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn {
+  appearance: none;
+  border-radius: 6px;
+  border: 1px solid #8b7ba8;
+  background: #ffffff;
+  color: #6e5b95;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 18px;
+  min-height: 44px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:hover {
+  background: rgba(110, 91, 149, 0.08);
+}
+
+.btn:active {
+  background: rgba(110, 91, 149, 0.14);
+}
+
+.btn:focus-visible {
+  outline: 2px solid #6e5b95;
+  outline-offset: 2px;
+}
+
+.btn--primary {
+  min-width: 96px;
+}
+
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ---------- Summary / status ---------- */
+.result-summary {
+  padding: 4px 0 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  min-height: 20px;
+}
+
+.result-summary__count {
+  margin: 0;
+  font-size: 14px;
+  color: #2e2e32;
+}
+
+.load-status {
+  margin: 0;
+  font-size: 13px;
+  color: #909098;
+}
+
+.load-status[data-state="error"] {
+  color: #6e5b95;
+}
+
+/* ---------- Case list ---------- */
+.case-list {
+  margin-top: 12px;
+  border-top: 1px solid #e6e6ea;
+}
+
+.case-item {
+  padding: 22px 4px;
+  border-bottom: 1px solid #e6e6ea;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+}
+
+.case-item:hover,
+.case-item:focus-within {
+  background: rgba(110, 91, 149, 0.045);
+}
+
+.case-item__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.case-item__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 2px;
+  border: none;
+  background: none;
+  color: #6e5b95;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+  word-break: break-all;
+}
+
+.case-item__title {
+  margin: 0 0 8px;
+  font-size: 19px;
+  font-weight: 600;
+  color: #2e2e32;
+}
+
+.case-item__summary {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #5c5c62;
+  max-width: 56em;
+}
+
+.case-item__link:hover {
+  color: #8b7ba8;
+}
+
+.case-item__link:focus-visible {
+  outline: 2px solid #6e5b95;
+  outline-offset: 2px;
+}
+
+.case-item__meta {
+  margin: 0;
+  font-size: 13px;
+  color: #909098;
+}
+
+.case-item__meta-sep {
+  padding: 0 2px;
+}
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  margin: 32px 0 0;
+  padding: 32px 0;
+  text-align: center;
+  font-size: 14px;
+  color: #909098;
+  border-top: 1px solid #e6e6ea;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  .page-shell {
+    padding: 0 16px 72px;
+  }
+
+  .site-header {
+    margin: 0 -16px 8px;
+    padding: 0 16px;
+  }
+
+  .site-header__inner {
+    padding: 36px 0 22px;
+  }
+
+  .site-header__title {
+    font-size: 22px;
+  }
+
+  .data-actions {
+    justify-content: stretch;
+  }
+
+  .btn--primary {
+    width: 100%;
+  }
+
+  .case-item__link {
+    min-height: 44px;
+  }
+}

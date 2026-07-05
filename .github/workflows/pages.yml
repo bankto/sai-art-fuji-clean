@@ -6,7 +6,10 @@ on:
       - main
     paths:
       - ".github/workflows/pages.yml"
-      - "research-site/**"
+      - "research-site/index.html"
+      - "research-site/styles.css"
+      - "research-site/app.js"
+      - "research-site/apps-script/**"
   workflow_dispatch:
 
 permissions:
@@ -17,36 +20,45 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: research-site
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-          package-manager-cache: false
-
-      - name: Setup Pages
+      - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Build research site
-        run: npm run build
+      - name: Prepare static files
         env:
           RESEARCH_SITE_DATA_API_URL: ${{ vars.RESEARCH_SITE_DATA_API_URL }}
+        run: |
+          if [ -z "$RESEARCH_SITE_DATA_API_URL" ]; then
+            echo "::error::Repository variable RESEARCH_SITE_DATA_API_URL is not set."
+            exit 1
+          fi
+
+          rm -rf public
+          mkdir public
+          cp research-site/index.html public/index.html
+          cp research-site/styles.css public/styles.css
+          cp research-site/app.js public/app.js
+          touch public/.nojekyll
+
+          sed -i "s|__RESEARCH_SITE_DATA_API_URL__|${RESEARCH_SITE_DATA_API_URL}|g" public/index.html
+
+          if grep -q "__RESEARCH_SITE_DATA_API_URL__" public/index.html; then
+            echo "::error::Failed to replace RESEARCH_SITE_DATA_API_URL placeholder."
+            exit 1
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: research-site/dist
+          path: public
 
   deploy:
-    needs: build
+    needs: prepare
     runs-on: ubuntu-latest
     permissions:
       pages: write
