@@ -1,4 +1,4 @@
-# /research — リサーチを実施する
+# /research — リサーチをオーケストレーションする
 
-`docs/workflows/research.md` を読み、その手順に従ってリサーチを実施する。
+あなた(Cursor)はオーケストレーター。収集・分析・検証は自分で行わず、`docs/workflows/orchestrate.md` を読み、その「Phase 1: リサーチの委譲フロー」に従って進める(収集・分析・検証は Claude Code、整形は Codex に CLI 委譲。ブリーフの壁打ちと status 更新は自分で行う)。
 引数があればそれをリサーチテーマとして扱う。無ければユーザーにテーマを確認する。
