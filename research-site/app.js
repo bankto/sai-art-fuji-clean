@@ -228,7 +228,8 @@ function domainLabel(urlString) {
 
 function createCard(record) {
   const fragment = elements.template.content.cloneNode(true);
-  const article = fragment.querySelector('.case-item');
+  let card = fragment.querySelector('.case-item');
+  const singleSourceUrl = record.urls.length === 1 ? record.urls[0] : null;
 
   const titleEl = fragment.querySelector('[data-field="title"]');
   if (titleEl) titleEl.textContent = record.title;
@@ -272,18 +273,40 @@ function createCard(record) {
 
   const linksEl = fragment.querySelector('[data-field="links"]');
   if (linksEl) {
-    record.urls.forEach((urlInfo) => {
-      const link = document.createElement('a');
-      link.className = 'case-item__link';
-      link.href = urlInfo.href;
-      link.target = '_blank';
-      link.rel = 'noreferrer';
-      link.textContent = domainLabel(urlInfo.raw || urlInfo.href);
-      linksEl.appendChild(link);
-    });
+    if (singleSourceUrl) {
+      const source = document.createElement('span');
+      source.className = 'case-item__source';
+      source.textContent = domainLabel(singleSourceUrl.raw || singleSourceUrl.href);
+      linksEl.appendChild(source);
+    } else {
+      record.urls.forEach((urlInfo) => {
+        const link = document.createElement('a');
+        link.className = 'case-item__link';
+        link.href = urlInfo.href;
+        link.target = '_blank';
+        link.rel = 'noreferrer';
+        link.textContent = domainLabel(urlInfo.raw || urlInfo.href);
+        linksEl.appendChild(link);
+      });
+    }
   }
 
-  return article;
+  if (singleSourceUrl) {
+    const linkedCard = document.createElement('a');
+    linkedCard.className = card.className;
+    linkedCard.href = singleSourceUrl.href;
+    linkedCard.target = '_blank';
+    linkedCard.rel = 'noreferrer';
+
+    while (card.firstChild) {
+      linkedCard.appendChild(card.firstChild);
+    }
+
+    card.replaceWith(linkedCard);
+    card = linkedCard;
+  }
+
+  return card;
 }
 
 function render() {

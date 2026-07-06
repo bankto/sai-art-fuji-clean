@@ -200,15 +200,27 @@ a {
 }
 
 .case-item {
+  display: block;
   padding: 22px 4px;
   border-bottom: 1px solid #e6e6ea;
   border-radius: 4px;
+  color: inherit;
+  text-decoration: none;
   transition: background-color 0.15s ease;
+}
+
+.case-item[href] {
+  cursor: pointer;
 }
 
 .case-item:hover,
 .case-item:focus-within {
   background: rgba(110, 91, 149, 0.045);
+}
+
+.case-item:focus-visible {
+  outline: 2px solid #6e5b95;
+  outline-offset: 2px;
 }
 
 .case-item__links {
@@ -218,7 +230,8 @@ a {
   margin-bottom: 10px;
 }
 
-.case-item__link {
+.case-item__link,
+.case-item__source {
   display: inline-flex;
   align-items: center;
   min-height: 36px;
@@ -270,7 +283,8 @@ a {
   color: #5c5c62;
 }
 
-.case-item__link:hover {
+.case-item__link:hover,
+.case-item[href]:hover .case-item__source {
   color: #8b7ba8;
 }
 
