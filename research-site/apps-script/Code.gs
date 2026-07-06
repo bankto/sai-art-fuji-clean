@@ -58,8 +58,10 @@ function normalizeRecords_(rows) {
         id: `case-${index + 1}`,
         title: pick_(row, headers, 'タイトル'),
         summary: pick_(row, headers, 'summary', 'Summary', '概要'),
+        selectionReason: pick_(row, headers, '選定理由'),
         region: pick_(row, headers, '国&地域', '国・地域'),
         category: pick_(row, headers, 'カテゴリ'),
+        verificationStatus: pick_(row, headers, '検証状態'),
         urls: splitSourceUrls_(sourceText),
       };
     })

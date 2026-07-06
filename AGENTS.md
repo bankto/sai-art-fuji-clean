@@ -30,7 +30,7 @@ Cursor / Codex / Claude Code のどれで作業しても、このファイルと
 | 2. まとめサイト | リサーチを見やすくWeb化 | Codex(実装) / Claude Code(整合レビュー) | `research-site/` | 静的サイト |
 | 3. アイデア出し | リサーチを元に発想・相談 | Cursor(壁打ち) / Claude Code(発散・批判) / Codex(シート整形) | `docs/ideas/` | アイデアシート |
 | 4. 仕様書作成 | 採用アイデアを仕様化 | Codex(作成) / Claude Code(レビュー) | `docs/specs/` + `docs/reviews/` | 仕様書 + レビュー |
-| 5. 実装 | Webサイト/Webアプリ開発 | Codex(実装) / Claude Code(レビュー) | `apps/` + `docs/reviews/` | プロダクト + レビュー |
+| 5. 実装 | Webサイト/Webアプリ開発 | Codex(実装) / Claude Code(レビュー) | `apps/` + `docs/reports/` + `docs/reviews/` | プロダクト + 作業報告 + レビュー |
 
 ## フェーズ別ワークフロー(全ツール共通)
 
@@ -48,6 +48,21 @@ Cursor / Codex / Claude Code のどれで作業しても、このファイルと
 | `docs/workflows/implement-review.md` | Claude Code |
 
 ツール別の入口: Cursor はスラッシュコマンド(`.cursor/commands/`、全フェーズ共通の入口は `/orchestrate`)、Claude Code もスラッシュコマンド(`.claude/commands/`)、Codex はスキル(`.agents/skills/`)。いずれも中身は上記ワークフローを参照するだけの薄いラッパー。
+新チャット・別ツールへの切り替え時に貼るコピペ用プロンプト(役割別の引き継ぎを含む)は `docs/prompts.md` にまとめてある。
+
+## Git・自律実行(全フェーズ共通)
+
+詳細な手順は `docs/workflows/orchestrate.md` にある。ここは正本としての要点。
+
+- **自律実行**: 委譲先は STOP 条件(秘密情報・認証・権限・課金・破壊的操作・仕様矛盾・完了不能・繰り返すビルド失敗・スコープ外機能)に該当しない限り質問で止まらず、迷いは自律判断して成果物の「未決事項」「自律判断ログ」に記録する。オーケストレーターも STOP 条件・ユーザー承認ポイント以外ではステップ間確認を挟まない
+- **レビュー判定**: レポートの `## 判定` 直下1行(承認 / 条件付き承認 / 要修正)だけを機械的に読む。品質の再判定はしない
+- **Git 操作範囲**:
+
+| 役割 | commit | push | 備考 |
+|---|---|---|---|
+| オーケストレーター(Cursor) | 可 | ユーザー判断が既定 | レビュー承認の区切りで対象差分を確認して commit。自動 push を許すなら `docs/decisions/` に記録 |
+| Codex | 不可 | 不可 | 作成・実装・作業報告まで |
+| Claude Code | 不可 | 不可 | レビュー文書に判定と修正方針を書く。対象ファイルは直接修正しない |
 
 ## フェーズ別の詳細ルール(全ツール共通)
 
@@ -69,6 +84,7 @@ Cursor / Codex / Claude Code のどれで作業しても、このファイルと
 - 委譲プロンプトには「読むファイル・出力先・前提」を毎回含める(委譲先は会話文脈を持たない)。詳細は `docs/workflows/orchestrate.md`
 - 成果物は上流ドキュメントへのリンクを持つ(仕様書→アイデア→リサーチと遡れるようにする)
 - フェーズを飛ばす場合(例: リサーチなしで実装)はユーザーに確認してから進める
+- 体制・方針の大きな変更は経緯を `docs/decisions/` に記録する
 - ドキュメントのファイル名は `YYYY-MM-DD_テーマ名.md` 形式(例: `2026-07-02_市場調査.md`)。本格リサーチのみフォルダ形式 `YYYY-MM-DD_テーマ名/`
 - 各ドキュメントは雛形に沿って書く(リサーチ: `docs/research/_templates/`、その他: `docs/*/_template.md`)
 - リサーチは2モード: ライト(1ファイル)/ 本格(brief → 収集 → 分析 → 検証 → 判断 の5段階)。本格では収集AIと検証AIを別コンテキストに分ける(CLI 委譲では別々の呼び出しに分ける)。詳細は `docs/workflows/research.md`

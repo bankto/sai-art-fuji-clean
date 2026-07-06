@@ -141,8 +141,10 @@ function normalizeApiRecords(payload) {
         id: item?.id || 'case-' + (index + 1),
         title: (item?.title || '').toString().trim() || '(無題)',
         summary: (item?.summary || '').toString().trim(),
+        selectionReason: (item?.selectionReason || '').toString().trim(),
         region: (item?.region || '').toString().trim(),
         category: (item?.category || '').toString().trim(),
+        verificationStatus: (item?.verificationStatus || '').toString().trim(),
         urls,
       };
     })
@@ -240,11 +242,33 @@ function createCard(record) {
     }
   }
 
+  const selectionReasonBlock = fragment.querySelector('[data-field="selectionReasonBlock"]');
+  const selectionReasonEl = fragment.querySelector('[data-field="selectionReason"]');
+  if (selectionReasonBlock && selectionReasonEl) {
+    if (record.selectionReason) {
+      selectionReasonEl.textContent = record.selectionReason;
+      selectionReasonBlock.hidden = false;
+    } else {
+      selectionReasonBlock.hidden = true;
+    }
+  }
+
   const regionEl = fragment.querySelector('[data-field="region"]');
   if (regionEl) regionEl.textContent = record.region || '地域未設定';
 
   const categoryEl = fragment.querySelector('[data-field="category"]');
   if (categoryEl) categoryEl.textContent = record.category || '種別未設定';
+
+  const verificationStatusBlock = fragment.querySelector('[data-field="verificationStatusBlock"]');
+  const verificationStatusEl = fragment.querySelector('[data-field="verificationStatus"]');
+  if (verificationStatusBlock && verificationStatusEl) {
+    if (record.verificationStatus) {
+      verificationStatusEl.textContent = record.verificationStatus;
+      verificationStatusBlock.hidden = false;
+    } else {
+      verificationStatusBlock.hidden = true;
+    }
+  }
 
   const linksEl = fragment.querySelector('[data-field="links"]');
   if (linksEl) {

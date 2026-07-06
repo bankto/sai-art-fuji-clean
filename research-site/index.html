@@ -56,10 +56,18 @@
         <div class="case-item__links" data-field="links"></div>
         <h2 class="case-item__title" data-field="title"></h2>
         <p class="case-item__summary" data-field="summary"></p>
+        <div class="case-item__selection" data-field="selectionReasonBlock" hidden>
+          <p class="case-item__selection-label">選定理由</p>
+          <p class="case-item__selection-text" data-field="selectionReason"></p>
+        </div>
         <p class="case-item__meta">
           <span data-field="region"></span>
           <span class="case-item__meta-sep" aria-hidden="true"> · </span>
           <span data-field="category"></span>
+        </p>
+        <p class="case-item__verification" data-field="verificationStatusBlock" hidden>
+          <span class="case-item__verification-label">検証状態</span>
+          <span data-field="verificationStatus"></span>
         </p>
       </article>
     </template>
