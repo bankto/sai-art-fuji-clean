@@ -1,6 +1,6 @@
 # research-site
 
-Phase 2 のリサーチまとめサイトです。ブラウザ表示時に Google Apps Script の中継APIから Google スプレッドシートのデータを取得し、全事例をカード一覧で表示します。
+Phase 2 の「技術調査とリサーチ」サイトです。ブラウザ表示時に Google Apps Script の中継APIから Google スプレッドシートのデータを取得し、全事例をカード一覧で表示します。
 
 サイト本体は以下の3ファイルです。Vanilla HTML/CSS/JavaScriptのみで、npm buildや外部パッケージは使いません。
 
@@ -22,7 +22,6 @@ https://docs.google.com/spreadsheets/d/1YJvTTgZVr9lKFffyKpsqkbbNWuNzyMDlao0iZhgF
 - `概要`
 - `選定理由`
 - `カテゴリ`
-- `検証状態`
 
 `docs/research/` のMarkdownから直接サイトを生成しません。サイト側でも、シートに無い事実は書き足しません。
 
@@ -30,7 +29,6 @@ https://docs.google.com/spreadsheets/d/1YJvTTgZVr9lKFffyKpsqkbbNWuNzyMDlao0iZhgF
 
 - `URL` に `|` 区切りで複数URLが入っている場合は、出典リンクを複数表示します。
 - `概要` と `選定理由` は別フィールドとしてカード上に表示します。`選定理由` が空欄の場合は表示しません。
-- `検証状態` は値がある行だけカード上に表示します。
 - 欠損行や一部空欄があっても、空欄表示として扱い、全体の生成は止めません。
 - ページ表示時と「再取得」ボタン押下時に中継APIからデータを取得します。表示中は5分ごとに自動再取得します。
 - 検索・絞り込みUIは持たず、取得した全件をそのまま表示します。
