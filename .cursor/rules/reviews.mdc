@@ -7,7 +7,7 @@ alwaysApply: false
 # レビューレポートのルール
 
 - `docs/reviews/_template.md` の構成に沿って書く
-- ファイル名は `YYYY-MM-DD_対象名_review.md`(再レビューは `_review2.md` のように連番)
+- ファイル名は `YYYY-MM-DD_<slug>_review.md`(再レビューは `_review2.md` のように連番)。slug は対象ドキュメントと揃え、**ASCII のみ**にする(`AGENTS.md` 全体ルール)
 - 指摘は重要度で分類する: Must(必ず対応)/ Should(対応推奨)/ Could(任意)
 - 指摘には必ず根拠(仕様書・アイデア・リサーチのどこと矛盾するか、または一般的な問題点)と修正案を添える
 - 同調だけのレビューにしない。良い点と問題点の両方を書く

@@ -1,0 +1,25 @@
+{
+  "_comment": "作業通知 hook の雛形(macOS / Linux 用。Windows は settings.local.json.example.windows を使う)。この内容を .claude/settings.local.json にコピーする。既存があれば hooks ブロックだけを permissions 等を壊さずマージする。sh 版の .agent-hooks/agent-alert.sh を呼び出す。",
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PROJECT_DIR}/.agent-hooks/agent-alert.sh\" --source \"Claude Code\" --event Notification"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PROJECT_DIR}/.agent-hooks/agent-alert.sh\" --source \"Claude Code\" --event Stop"
+          }
+        ]
+      }
+    ]
+  }
+}

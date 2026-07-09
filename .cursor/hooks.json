@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "stop": [
+      {
+        "command": "/bin/sh .agent-hooks/agent-alert.sh --source Cursor --event Stop"
+      },
+      {
+        "command": "powershell.exe -NoProfile -STA -File .agent-hooks/agent-alert.ps1 -Source Cursor -Event Stop"
+      }
+    ]
+  }
+}

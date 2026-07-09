@@ -4,6 +4,10 @@ dist/
 .env.*
 !.env.example
 *.log
+
+# 委譲用の一時プロンプトファイル(docs/workflows/orchestrate.md)
+_prompt.md
+
 .DS_Store
 Thumbs.db
 .vite/

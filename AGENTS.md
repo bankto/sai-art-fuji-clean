@@ -47,22 +47,26 @@ Cursor / Codex / Claude Code のどれで作業しても、このファイルと
 | `docs/workflows/implement.md` | Codex |
 | `docs/workflows/implement-review.md` | Claude Code |
 
-ツール別の入口: Cursor はスラッシュコマンド(`.cursor/commands/`、全フェーズ共通の入口は `/orchestrate`)、Claude Code もスラッシュコマンド(`.claude/commands/`)、Codex はスキル(`.agents/skills/`)。いずれも中身は上記ワークフローを参照するだけの薄いラッパー。
+ツール別の入口: Cursor はスラッシュコマンド(`.cursor/commands/`、全フェーズ共通の入口は `/orchestrate`)、Claude Code もスラッシュコマンド(`.claude/commands/`)、Codex はスキル(`.agents/skills/`)。いずれも中身は上記ワークフローを参照するだけの薄いラッパー。例外として `.cursor/skills/orchestrator-judgment/` はオーケストレーターの判断基準(難易度見立て・STOP 解釈・検証・リカバリ)を実体として持つ判断補助スキル(正本と矛盾したら正本を優先)。
 新チャット・別ツールへの切り替え時に貼るコピペ用プロンプト(役割別の引き継ぎを含む)は `docs/prompts.md` にまとめてある。
 
-## Git・自律実行(全フェーズ共通)
+## Git・自律実行・通知(全フェーズ共通)
 
 詳細な手順は `docs/workflows/orchestrate.md` にある。ここは正本としての要点。
 
-- **自律実行**: 委譲先は STOP 条件(秘密情報・認証・権限・課金・破壊的操作・仕様矛盾・完了不能・繰り返すビルド失敗・スコープ外機能)に該当しない限り質問で止まらず、迷いは自律判断して成果物の「未決事項」「自律判断ログ」に記録する。オーケストレーターも STOP 条件・ユーザー承認ポイント以外ではステップ間確認を挟まない
+- **自律実行**: 委譲先は STOP 条件(秘密情報・認証・権限・個人情報・課金・外部サービス契約・破壊的操作・仕様矛盾・完了不能・繰り返すビルド失敗・スコープ外機能。完全な一覧は `docs/workflows/orchestrate.md`「自律実行ルールと STOP 条件」)に該当しない限り質問で止まらず、迷いは自律判断して成果物の「未決事項」「自律判断ログ」に記録する。オーケストレーターも STOP 条件・ユーザー承認ポイント以外ではステップ間確認を挟まない。**単体実行(ユーザーの直接依頼・対話)でも同じ**: 前提の確認は着手前に1回まとめて行い、着手後は STOP 条件に該当しない限り質問で止まらず完走する(迷い・確認したい点は成果物の未決事項・補足に書く)
 - **レビュー判定**: レポートの `## 判定` 直下1行(承認 / 条件付き承認 / 要修正)だけを機械的に読む。品質の再判定はしない
+- **モデル・effort**: 委譲のたびにオーケストレーターがタスクの難易度を見てモデルと effort を自動判断する(固定表は作らない)。モデルは各CLIの既定=最上位に任せ、effort を難易度で上げ下げする(Codex への委譲コマンドに `-c model_reasoning_effort=…` を毎回明示し、省略しない)。前提として `codex` / `claude` の既定モデルを最上位にしておく。**作業後は、実際に使った AI・モデル・effort を成果物冒頭の「使用AI / モデル / effort」行と `docs/status.md` の決定事項ログに記録する**。詳細は `docs/workflows/orchestrate.md`「モデル・effort の自動判断」
+- **区切りごとの案内**: オーケストレーターは作業の区切りごとに「完了・次のタスク(担当。人間作業があれば先出し)・セッション(継続可 / 切り替え推奨)」を最終応答で明示する。詳細は `docs/workflows/orchestrate.md`「作業の区切りごとの最終応答」「セッションの切り替え」
 - **Git 操作範囲**:
 
 | 役割 | commit | push | 備考 |
 |---|---|---|---|
-| オーケストレーター(Cursor) | 可 | ユーザー判断が既定 | レビュー承認の区切りで対象差分を確認して commit。自動 push を許すなら `docs/decisions/` に記録 |
+| オーケストレーター(Cursor) | 可 | 可(通常 push のみ) | レビュー承認の区切りで対象差分を確認して commit → push。強制 push・履歴改変は不可。確立済みデプロイの再実行も自律で行う(初回公開・課金を伴う設定はユーザー承認) |
 | Codex | 不可 | 不可 | 作成・実装・作業報告まで |
 | Claude Code | 不可 | 不可 | レビュー文書に判定と修正方針を書く。対象ファイルは直接修正しない |
+
+- **作業通知**: hook(Windows: `.agent-hooks/agent-alert.ps1` / macOS・Linux: `.agent-hooks/agent-alert.sh`)で、担当AIの作業完了・承認待ちをデスクトップ通知する。`.cursor/hooks.json`(Cursor)と `.codex/hooks.json`(Codex)はリポジトリ同梱で、ファイルが存在するだけで有効。Claude Code は `.claude/settings.local.json.example.*` を `.claude/settings.local.json` にコピーして有効化する(手順の正本はテンプレ `D:\workspace\_templates\ai-dev-workflow\README.md`「作業通知のセットアップ」)。通知はプロジェクト単位に一本化し、ユーザーグローバル側には hook を置かない(二重通知防止)。ログ `.agent-hooks/alerts.log` と個人設定 `.claude/settings.local.json` は Git に含めない
 
 ## フェーズ別の詳細ルール(全ツール共通)
 
@@ -85,7 +89,7 @@ Cursor / Codex / Claude Code のどれで作業しても、このファイルと
 - 成果物は上流ドキュメントへのリンクを持つ(仕様書→アイデア→リサーチと遡れるようにする)
 - フェーズを飛ばす場合(例: リサーチなしで実装)はユーザーに確認してから進める
 - 体制・方針の大きな変更は経緯を `docs/decisions/` に記録する
-- ドキュメントのファイル名は `YYYY-MM-DD_テーマ名.md` 形式(例: `2026-07-02_市場調査.md`)。本格リサーチのみフォルダ形式 `YYYY-MM-DD_テーマ名/`
+- ドキュメントのファイル名は `YYYY-MM-DD_<slug>.md` 形式とする。`<slug>` は **ASCII のみ**(英小文字・数字・ハイフン。例: `market-research`)。種別サフィックスも ASCII で付ける(例: `_review` / `_hearing`)。本格リサーチのみフォルダ形式 `YYYY-MM-DD_<slug>/`。日本語のテーマ名はファイル内の見出しに書く(日本語を含むファイル名は Cursor のチャットリンク等で URL エンコードされ、開けないことがあるため)。既存ファイルの改名はしない(新規作成分から適用)
 - 各ドキュメントは雛形に沿って書く(リサーチ: `docs/research/_templates/`、その他: `docs/*/_template.md`)
 - リサーチは2モード: ライト(1ファイル)/ 本格(brief → 収集 → 分析 → 検証 → 判断 の5段階)。本格では収集AIと検証AIを別コンテキストに分ける(CLI 委譲では別々の呼び出しに分ける)。詳細は `docs/workflows/research.md`
 - ドキュメントはすべて日本語で書く

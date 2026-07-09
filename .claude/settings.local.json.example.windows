@@ -1,0 +1,25 @@
+{
+  "_comment": "作業通知 hook の雛形(Windows 用。macOS / Linux は settings.local.json.example.mac を使う)。この内容を .claude/settings.local.json にコピーする。既存があれば hooks ブロックだけを permissions 等を壊さずマージする。PowerShell 版の .agent-hooks/agent-alert.ps1 を呼び出す。",
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -STA -File \"${CLAUDE_PROJECT_DIR}/.agent-hooks/agent-alert.ps1\" -Source \"Claude Code\" -Event Notification"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -STA -File \"${CLAUDE_PROJECT_DIR}/.agent-hooks/agent-alert.ps1\" -Source \"Claude Code\" -Event Stop"
+          }
+        ]
+      }
+    ]
+  }
+}

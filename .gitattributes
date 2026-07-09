@@ -1,0 +1,8 @@
+# 作業通知 hook スクリプトの改行を固定する(テンプレ ai-dev-workflow 由来。
+# テンプレは `* text=auto eol=lf` だが、既存リポジトリ全体の改行正規化を避けるため最小限に留めた)
+
+# sh スクリプトは常に LF(CRLF だと sh が解釈できない)
+*.sh text eol=lf
+
+# PowerShell スクリプトのみ Windows 慣習の CRLF
+*.ps1 text eol=crlf

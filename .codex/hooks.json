@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "command": "sh .agent-hooks/agent-alert.sh --source Codex --event PermissionRequest",
+        "commandWindows": "powershell.exe -NoProfile -STA -File .agent-hooks/agent-alert.ps1 -Source Codex -Event PermissionRequest"
+      }
+    ],
+    "Stop": [
+      {
+        "command": "sh .agent-hooks/agent-alert.sh --source Codex --event Stop",
+        "commandWindows": "powershell.exe -NoProfile -STA -File .agent-hooks/agent-alert.ps1 -Source Codex -Event Stop"
+      }
+    ]
+  }
+}
