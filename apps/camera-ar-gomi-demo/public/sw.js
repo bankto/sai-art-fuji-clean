@@ -1,4 +1,4 @@
-const CACHE_NAME = 'camera-ar-gomi-demo-v3';
+const CACHE_NAME = 'camera-ar-gomi-demo-v4';
 const CORE_ASSETS = [
   './',
   './index.html',

@@ -1,6 +1,6 @@
 import './styles.css';
 import { hasCompiledTarget, startMindArSession, type MindArSession } from './ar';
-import { readFrameNonce, startCamera, stopCamera } from './camera';
+import { getInAppBrowserOpenMessage, readFrameNonce, startCamera, stopCamera } from './camera';
 import { Recognizer } from './recognition';
 import {
   createArHash,
@@ -190,6 +190,15 @@ class CameraArGomiDemo {
     this.stopArSession();
     this.status.textContent = 'Starting';
     this.cameraMessage.textContent = '';
+
+    const inAppBrowserMessage = getInAppBrowserOpenMessage();
+    if (inAppBrowserMessage) {
+      this.cameraMessage.textContent = inAppBrowserMessage;
+      this.showToast(inAppBrowserMessage);
+      this.status.textContent = 'Open in Safari/Chrome';
+      return;
+    }
+
     try {
       await this.sound.prepare();
     } catch {
@@ -393,7 +402,7 @@ class CameraArGomiDemo {
   }
 
   private showCameraError(error: unknown): void {
-    const message = messageFromError(error);
+    const message = messageFromCameraError(error);
     this.cameraMessage.textContent = message;
     this.showToast(message);
     this.status.textContent = 'Error';
@@ -419,6 +428,13 @@ function messageFromError(error: unknown): string {
     return error.message;
   }
   return '処理に失敗しました。';
+}
+
+function messageFromCameraError(error: unknown): string {
+  if (error instanceof DOMException && ['NotAllowedError', 'SecurityError'].includes(error.name)) {
+    return 'カメラ権限が拒否されています。ブラウザまたはOSの設定からこのサイトのカメラ許可を有効にし、ページを再読み込みしてください。';
+  }
+  return messageFromError(error);
 }
 
 const app = new CameraArGomiDemo();

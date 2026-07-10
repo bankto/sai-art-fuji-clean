@@ -1,5 +1,14 @@
 import { hashString } from './seed';
 
+const inAppBrowserPattern = /(Line\/|Instagram|FBAN|FBAV|FB_IAB|MicroMessenger|TikTok|Twitter|GSA)/i;
+
+export function getInAppBrowserOpenMessage(userAgent = navigator.userAgent): string | undefined {
+  if (!inAppBrowserPattern.test(userAgent)) {
+    return undefined;
+  }
+  return 'LINE/Instagramなどのアプリ内ブラウザではカメラが動作しない場合があります。Safari または Chrome でこのページを開き直してください。';
+}
+
 export async function startCamera(video: HTMLVideoElement): Promise<MediaStream> {
   if (!navigator.mediaDevices?.getUserMedia) {
     throw new Error('このブラウザではカメラを起動できません。Safari または Chrome で開いてください。');
