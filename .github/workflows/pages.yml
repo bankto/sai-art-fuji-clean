@@ -1,4 +1,4 @@
-name: Deploy research site to GitHub Pages
+name: Deploy research site and demos to GitHub Pages
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
       - "research-site/styles.css"
       - "research-site/app.js"
       - "research-site/apps-script/**"
+      - "apps/camera-ar-gomi-demo/**"
   workflow_dispatch:
 
 permissions:
@@ -26,8 +27,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/camera-ar-gomi-demo/package-lock.json
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
+
+      - name: Build camera AR demo
+        working-directory: apps/camera-ar-gomi-demo
+        run: |
+          npm ci
+          npm run build
 
       - name: Prepare static files
         env:
@@ -44,6 +58,9 @@ jobs:
           cp research-site/styles.css public/styles.css
           cp research-site/app.js public/app.js
           touch public/.nojekyll
+
+          mkdir -p public/camera-ar-gomi-demo
+          cp -r apps/camera-ar-gomi-demo/dist/. public/camera-ar-gomi-demo/
 
           sed -i "s|__RESEARCH_SITE_DATA_API_URL__|${RESEARCH_SITE_DATA_API_URL}|g" public/index.html
 

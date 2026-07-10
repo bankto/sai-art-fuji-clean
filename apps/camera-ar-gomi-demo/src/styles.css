@@ -400,3 +400,162 @@ input[type="range"] {
     font-size: clamp(2rem, 13vw, 3.9rem);
   }
 }
+
+.takeaway-layout {
+  display: grid;
+  gap: 14px;
+}
+
+.share-stack {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.vertical {
+  align-self: stretch;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.nfc-band,
+.ar-toolbar,
+.ar-target-band {
+  border: 1px solid #29312f;
+  border-radius: 8px;
+  background: #171b1a;
+}
+
+.nfc-band {
+  display: grid;
+  grid-template-columns: minmax(160px, 240px) minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+}
+
+.nfc-band h2,
+.ar-toolbar h2,
+.ar-target-band h2 {
+  margin: 4px 0 0;
+  color: #f7f5ec;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.ar-view {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.ar-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+}
+
+.ar-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: min(72vh, 760px);
+  border: 1px solid #29312f;
+  border-radius: 8px;
+  background: #080a09;
+}
+
+.mindar-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.mindar-layer canvas,
+.mindar-layer video {
+  max-width: 100%;
+}
+
+.texture-source {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ar-fallback {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: rgba(8, 10, 9, 0.72);
+  text-align: center;
+}
+
+.ar-fallback.visible {
+  display: grid;
+}
+
+#ar-fallback-canvas {
+  display: block;
+  width: min(58vh, min(100%, 520px));
+  aspect-ratio: 1;
+  border: 1px solid rgba(242, 240, 230, 0.22);
+  border-radius: 6px;
+}
+
+.ar-fallback p {
+  max-width: 760px;
+  margin: 0;
+  color: #f2f0e6;
+  line-height: 1.6;
+}
+
+.ar-target-band {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+}
+
+.ar-target-band img {
+  width: 150px;
+  max-width: 100%;
+  border-radius: 6px;
+  background: #f7f5ec;
+}
+
+@media (max-width: 860px) {
+  .nfc-band,
+  .ar-toolbar,
+  .ar-target-band {
+    grid-template-columns: 1fr;
+  }
+
+  .ar-toolbar {
+    display: grid;
+  }
+
+  .ar-toolbar .action-row,
+  .nfc-band button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .vertical button,
+  .nfc-band button,
+  .ar-toolbar button {
+    width: 100%;
+  }
+
+  .ar-stage {
+    min-height: 64vh;
+  }
+}

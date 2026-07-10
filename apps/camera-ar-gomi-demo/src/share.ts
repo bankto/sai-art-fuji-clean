@@ -1,10 +1,13 @@
 import QRCode from 'qrcode';
-import { createShareHash } from './seed';
+import { createArHash, createShareHash } from './seed';
 import type { ArtworkSeed } from './types';
 
 export function createShareUrl(artwork: ArtworkSeed): string {
-  const baseUrl = `${window.location.origin}${window.location.pathname}`;
-  return `${baseUrl}${createShareHash(artwork)}`;
+  return `${createBaseUrl()}${createShareHash(artwork)}`;
+}
+
+export function createArUrl(artwork: ArtworkSeed): string {
+  return `${createBaseUrl()}${createArHash(artwork)}`;
 }
 
 export async function renderQrCode(canvas: HTMLCanvasElement, url: string): Promise<void> {
@@ -32,4 +35,8 @@ export async function copyToClipboard(value: string): Promise<void> {
   input.select();
   document.execCommand('copy');
   input.remove();
+}
+
+function createBaseUrl(): string {
+  return `${window.location.origin}${window.location.pathname}`;
 }

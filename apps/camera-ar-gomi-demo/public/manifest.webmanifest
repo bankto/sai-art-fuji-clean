@@ -1,0 +1,25 @@
+{
+  "name": "camera-ar-gomi-demo",
+  "short_name": "Gomi AR",
+  "description": "カメラ認識、生成作品、NFC/QR持ち帰り、画像ターゲットARを確認する検証用デモ",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#101312",
+  "theme_color": "#101312",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

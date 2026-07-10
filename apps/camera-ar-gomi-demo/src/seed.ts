@@ -73,33 +73,19 @@ export function deriveGeneratorParams(seed: string, version: string): GeneratorP
 }
 
 export function readPlaybackParams(hash: string): PlaybackParams | null {
-  const rawHash = hash.startsWith('#') ? hash.slice(1) : hash;
-  const [route, query = ''] = rawHash.split('?');
-  if (route !== 'play') {
-    return null;
-  }
+  return readRouteParams(hash, 'play');
+}
 
-  const params = new URLSearchParams(query);
-  const seed = params.get('s');
-  const generatorVersion = params.get('v');
-  if (!seed || !generatorVersion) {
-    return null;
-  }
-
-  return {
-    seed,
-    generatorVersion,
-    objectLabel: params.get('label') || 'URL再生',
-  };
+export function readArParams(hash: string): PlaybackParams | null {
+  return readRouteParams(hash, 'ar');
 }
 
 export function createShareHash(artwork: ArtworkSeed): string {
-  const params = new URLSearchParams({
-    s: artwork.seed,
-    v: artwork.generatorVersion,
-    label: artwork.objectLabel,
-  });
-  return `#play?${params.toString()}`;
+  return createRouteHash('play', artwork);
+}
+
+export function createArHash(artwork: ArtworkSeed): string {
+  return createRouteHash('ar', artwork);
 }
 
 export function hashString(input: string): number {
@@ -120,6 +106,36 @@ export function mulberry32(seed: number): () => number {
     value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
     return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
   };
+}
+
+function readRouteParams(hash: string, expectedRoute: 'play' | 'ar'): PlaybackParams | null {
+  const rawHash = hash.startsWith('#') ? hash.slice(1) : hash;
+  const [route, query = ''] = rawHash.split('?');
+  if (route !== expectedRoute) {
+    return null;
+  }
+
+  const params = new URLSearchParams(query);
+  const seed = params.get('s');
+  const generatorVersion = params.get('v');
+  if (!seed || !generatorVersion) {
+    return null;
+  }
+
+  return {
+    seed,
+    generatorVersion,
+    objectLabel: params.get('label') || 'URL再生',
+  };
+}
+
+function createRouteHash(route: 'play' | 'ar', artwork: ArtworkSeed): string {
+  const params = new URLSearchParams({
+    s: artwork.seed,
+    v: artwork.generatorVersion,
+    label: artwork.objectLabel,
+  });
+  return `#${route}?${params.toString()}`;
 }
 
 function slugifyLabel(label: string): string {

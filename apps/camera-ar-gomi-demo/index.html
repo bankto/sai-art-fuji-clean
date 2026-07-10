@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#101312" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+    <link rel="icon" href="%BASE_URL%icons/icon.svg" type="image/svg+xml" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+          "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
+        }
+      }
+    </script>
     <title>camera-ar-gomi-demo</title>
   </head>
   <body>
@@ -13,7 +24,7 @@
           <p class="eyebrow">Fuji Clean Prototype</p>
           <h1>camera-ar-gomi-demo</h1>
         </div>
-        <div class="status-pill" id="app-status">M1-M2</div>
+        <div class="status-pill" id="app-status">M2.5-M3</div>
       </header>
 
       <main>
@@ -21,7 +32,7 @@
           <div class="start-copy">
             <p class="eyebrow">Camera Recognition / Sound / Visual</p>
             <h2>対象物から作品を生成する</h2>
-            <p>カメラ、端末内生成、URL/QR持ち帰りを確認します。</p>
+            <p>カメラ、端末内生成、URL/QR/NFC持ち帰り、画像ターゲットARを確認します。</p>
           </div>
           <div class="action-row">
             <button class="primary-button" id="start-button" type="button">開始</button>
@@ -91,21 +102,78 @@
                 <button class="secondary-button" id="regenerate-button" type="button">再生成</button>
                 <button class="secondary-button" id="rescan-button" type="button">撮り直す</button>
                 <button class="secondary-button" id="save-png-button" type="button">PNG保存</button>
+                <button class="primary-button" id="open-ar-button" type="button">AR検証</button>
               </div>
             </div>
           </div>
 
-          <div class="share-band">
-            <div>
-              <p class="eyebrow">Takeaway</p>
-              <h2>URL / QR</h2>
+          <div class="takeaway-layout">
+            <div class="share-band">
+              <div>
+                <p class="eyebrow">Takeaway</p>
+                <h2>URL / QR</h2>
+              </div>
+              <canvas id="qr-canvas" width="256" height="256" aria-label="共有用QRコード"></canvas>
+              <div class="share-stack">
+                <label class="share-url">
+                  <span>再生URL</span>
+                  <input id="share-url-input" type="text" readonly />
+                </label>
+                <label class="share-url">
+                  <span>AR URL</span>
+                  <input id="ar-url-input" type="text" readonly />
+                </label>
+              </div>
+              <div class="action-row vertical">
+                <button class="primary-button" id="copy-url-button" type="button">再生URLコピー</button>
+                <button class="secondary-button" id="copy-ar-url-button" type="button">AR URLコピー</button>
+              </div>
             </div>
-            <canvas id="qr-canvas" width="256" height="256" aria-label="共有用QRコード"></canvas>
-            <label class="share-url">
-              <span>共有URL</span>
-              <input id="share-url-input" type="text" readonly />
-            </label>
-            <button class="primary-button" id="copy-url-button" type="button">URLコピー</button>
+
+            <div class="nfc-band">
+              <div>
+                <p class="eyebrow">NFC</p>
+                <h2>NFCに書き込む</h2>
+              </div>
+              <p class="message" id="nfc-message">NFC書き込み対応を確認しています。</p>
+              <button class="primary-button hidden" id="nfc-write-button" type="button">NFCに書き込む</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="view ar-view hidden" id="ar-view" aria-label="AR検証">
+          <div class="ar-toolbar">
+            <div>
+              <p class="eyebrow">Image Target AR</p>
+              <h2>画像ターゲットに重ねる</h2>
+            </div>
+            <div class="action-row">
+              <button class="primary-button" id="start-ar-button" type="button">AR開始</button>
+              <button class="secondary-button" id="stop-ar-button" type="button">AR停止</button>
+              <button class="secondary-button" id="back-to-artwork-button" type="button">作品へ戻る</button>
+            </div>
+          </div>
+
+          <div class="ar-stage" id="ar-stage">
+            <div class="mindar-layer" id="mindar-layer"></div>
+            <canvas class="texture-source" id="ar-texture-canvas" width="960" height="960" aria-hidden="true"></canvas>
+            <div class="ar-fallback visible" id="ar-fallback-panel">
+              <canvas id="ar-fallback-canvas" width="720" height="720" aria-label="通常再生フォールバック"></canvas>
+              <p id="ar-status" role="status">
+                ターゲットを印刷し、AR開始後にカメラへ写してください。見失った場合は通常再生を継続します。
+              </p>
+            </div>
+          </div>
+
+          <div class="ar-target-band">
+            <img src="%BASE_URL%ar-targets/gomi-target.svg" alt="印刷用ARターゲット" />
+            <div>
+              <p class="eyebrow">Target</p>
+              <h2>印刷 / 彫刻サンプル</h2>
+              <p class="message">
+                public/ar-targets/gomi-target.svg を印刷し、MindAR compilerで gomi-target.mind を生成して同じフォルダへ置きます。
+              </p>
+            </div>
           </div>
         </section>
       </main>

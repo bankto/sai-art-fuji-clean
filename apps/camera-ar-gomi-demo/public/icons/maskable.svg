@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Gomi AR maskable icon">
+  <rect width="512" height="512" fill="#101312"/>
+  <circle cx="256" cy="256" r="206" fill="#f7f5ec"/>
+  <path d="M142 178h228M142 256h228M142 334h228" stroke="#101312" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="178" cy="178" r="30" fill="#d94f30"/>
+  <circle cx="256" cy="256" r="44" fill="#1f7a8c"/>
+  <circle cx="334" cy="334" r="30" fill="#f0b429"/>
+</svg>

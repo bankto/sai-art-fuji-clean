@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="GOMI AR TARGET">
+  <rect width="1000" height="1000" fill="#f8f5e8"/>
+  <rect x="38" y="38" width="924" height="924" fill="none" stroke="#111312" stroke-width="52"/>
+  <rect x="118" y="118" width="236" height="236" fill="#111312"/>
+  <rect x="156" y="156" width="160" height="160" fill="#f8f5e8"/>
+  <rect x="196" y="196" width="80" height="80" fill="#111312"/>
+  <rect x="646" y="118" width="236" height="236" fill="#111312"/>
+  <rect x="684" y="156" width="160" height="160" fill="#f8f5e8"/>
+  <rect x="724" y="196" width="80" height="80" fill="#111312"/>
+  <rect x="118" y="646" width="236" height="236" fill="#111312"/>
+  <rect x="156" y="684" width="160" height="160" fill="#f8f5e8"/>
+  <rect x="196" y="724" width="80" height="80" fill="#111312"/>
+  <path d="M420 160h80v80h-80zM540 160h48v48h-48zM452 280h136v48H452zM404 404h80v80h-80zM532 404h160v80H532zM404 532h48v160h-48zM532 548h80v80h-80zM652 548h80v80h-80zM532 704h200v48H532zM780 456h80v236h-80z" fill="#111312"/>
+  <circle cx="500" cy="500" r="112" fill="#d94f30"/>
+  <circle cx="500" cy="500" r="70" fill="#1f7a8c"/>
+  <circle cx="500" cy="500" r="28" fill="#f0b429"/>
+  <path d="M498 372l32 88 92-6-72 58 34 86-86-48-78 58 20-94-76-54 96-2z" fill="#f8f5e8" opacity="0.9"/>
+  <text x="500" y="928" text-anchor="middle" font-family="Arial, sans-serif" font-size="64" font-weight="800" fill="#111312">GOMI AR TARGET</text>
+</svg>
