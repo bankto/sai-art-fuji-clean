@@ -1,0 +1,23 @@
+{
+  "name": "camera-ar-gomi-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -p tsconfig.json && vite build --base ./",
+    "preview": "node scripts/preview-dist.mjs",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0",
+    "qrcode": "^1.5.4",
+    "tone": "^15.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/qrcode": "^1.5.5",
+    "typescript": "^5.8.0",
+    "vite": "^7.0.0"
+  }
+}
