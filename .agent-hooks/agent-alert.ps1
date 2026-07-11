@@ -47,6 +47,8 @@ $msg = ""
 if ($payload) {
     if ($payload.PSObject.Properties["message"] -and $payload.message) {
         $msg = [string]$payload.message
+    } elseif ($payload.PSObject.Properties["last_assistant_message"] -and $payload.last_assistant_message) {
+        $msg = [string]$payload.last_assistant_message
     } elseif ($payload.PSObject.Properties["last-assistant-message"] -and $payload."last-assistant-message") {
         $msg = [string]$payload."last-assistant-message"
     } elseif ($payload.PSObject.Properties["transcript_path"] -and $payload.transcript_path -and (Test-Path -LiteralPath $payload.transcript_path)) {

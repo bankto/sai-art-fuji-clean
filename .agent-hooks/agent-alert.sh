@@ -75,6 +75,8 @@ var msg = '';
 if (payload) {
     if (payload.message) {
         msg = String(payload.message);
+    } else if (payload.last_assistant_message) {
+        msg = String(payload.last_assistant_message);
     } else if (payload['last-assistant-message']) {
         msg = String(payload['last-assistant-message']);
     } else if (payload.transcript_path) {

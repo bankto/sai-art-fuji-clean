@@ -1,13 +1,43 @@
+# 依存・ビルド成果物
 node_modules/
 dist/
+build/
+.vite/
+
+# 秘密情報(絶対にコミットしない)
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.npmrc
+!.npmrc.example
+service-account*.json
+credentials*.json
+secrets*.json
+!service-account*.example.json
+!credentials*.example.json
+!secrets*.example.json
+*.tfstate
+*.tfstate.*
+.dev.vars
+.wrangler/
+
+# 作業通知 hook のログ・個人設定
+.agent-hooks/alerts.log
+.claude/settings.local.json
+
+# 一時ファイル・ログ
 *.log
+.tmp-*
+*.tmp
+*-dev.log
 
 # 委譲用の一時プロンプトファイル(docs/workflows/orchestrate.md)
 _prompt.md
 
+# OS
 .DS_Store
 Thumbs.db
-.vite/

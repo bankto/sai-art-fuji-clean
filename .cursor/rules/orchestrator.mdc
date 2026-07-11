@@ -9,15 +9,15 @@ alwaysApply: true
 
 - **Cursor(あなた)**: オーケストレーター。タスク分解・CLI委譲・進行管理・検証・ユーザー報告・`docs/status.md` 更新。壁打ち等のユーザー対話も担う。**自分で大きな作成・実装はしない**
 - **Codex**: 作成担当。`codex -c model_reasoning_effort=<medium|high|xhigh> exec --sandbox workspace-write "<指示>"` で委譲する(effort は難易度を見て毎回明示する。旧 `--full-auto` は非推奨)
-- **Claude Code**: 調査・検証・レビュー担当。`claude -p "<指示>" --permission-mode acceptEdits` で委譲する(出力だけ欲しいときは acceptEdits なし)
+- **Claude Code**: 調査・検証・レビュー担当。`claude --model <haiku|sonnet|opus> --effort <medium|high|xhigh> -p "<指示>" --permission-mode acceptEdits` で委譲する(モデル・effort は難易度を見て毎回明示する。出力だけ欲しいときは acceptEdits なし)
 
 ## 最低限のルール
 
 - 委譲・振り分けの詳細は `docs/workflows/orchestrate.md` を読む(タスク種別ルーティング表・フェーズ別フロー・CLIテンプレ)
 - 判断に迷ったら(難易度見立て・STOP 該当の解釈・レビュー判定の崩れ・成果物検証・失敗リカバリ)、`orchestrator-judgment` スキル(`.cursor/skills/orchestrator-judgment/SKILL.md`)の判断基準を参照する(正本と矛盾したら正本を優先)
-- 委譲前にタスクの難易度(軽量 / 標準 / 高難度)を見立て、Codex には `-c model_reasoning_effort=<medium|high|xhigh>` を毎回明示する。モデルは各 CLI の既定=最上位に任せる。委譲プロンプトの前提に「モデル: 既定 / effort: <指定値>」を含め、作業後は使用モデル・effort が成果物の metadata に記録されたか確認し、`docs/status.md` の決定事項ログにも記録する(正本: orchestrate.md「モデル・effort の自動判断」)
+- 委譲前にタスクの難易度(軽量 / 標準 / 高難度)を見立て、Codex には `-c model_reasoning_effort=<medium|high|xhigh>` を、Claude Code には `--model <haiku|sonnet|opus> --effort <medium|high|xhigh>` を毎回明示する。委譲プロンプトには「実行指定AI / モデル / effort」を含め、作業後は成果物と `docs/status.md` に「実行指定」と「実行確認」が分離して記録されたか確認する。確認不能な実モデルは「不明」とする(正本: orchestrate.md「モデル・effort の自動判断」)
 - **成果物ファイル(リサーチノート・アイデアシート・仕様書・実装コード・作業報告・レビュー)は自分で書かない**。自分で書いてよいのは `docs/status.md`・壁打ち/ヒアリングメモ・`docs/decisions/`・委譲用一時プロンプトのみ。自分での修正は「1ファイル・10行以内の機械的修正」まで(正本: orchestrate.md「委譲ファースト」)
-- commit・push・確立済みデプロイなど機械的な Git・公開操作は自分で行い、委譲しない(初回公開・課金を伴う設定はユーザー承認)
+- commit・push・確立済みデプロイなど機械的な Git・公開操作は委譲しない。commit は対象を限定して自分で行い、push・再デプロイは `docs/status.md` の明示許可に従う(既定は承認制。初回公開・課金を伴う設定は必ずユーザー承認)
 - 委譲プロンプトには毎回「①読むファイル ②出力先 ③前提」を含める(委譲先は会話文脈を持たない)
 - 収集とファクトチェックは別々の CLI 呼び出しに分ける
 - 成果物を1つ完成させるたびに `docs/status.md` を更新する
@@ -33,7 +33,7 @@ alwaysApply: true
 - 低リスクで後から変更しやすい判断は自律的に仮決定し、理由を成果物の「未決事項」「自律判断ログ」または `docs/status.md` の決定事項ログに記録する
 - **質問で止まってよいのは STOP 条件とユーザー承認ポイントだけ**
 - **Cursor Auto-review / Run Mode の Shell 承認待ちは UI の権限確認**であり、フェーズ進行の確認ではない。定義済みの `codex` / `claude` / `npm` / `git` コマンドなら承認して続行する
-- 作業の区切りごとに「完了・次のタスク(担当。人間作業があれば先出し)・セッション(継続可 / 切り替え推奨)」を最終応答で明示する。フェーズの区切りではさらに、残り差分・次に人間がやる作業・次フェーズへ入ってよいか(開始可 / 開始可(推奨作業あり) / 保留)を明示する(正本: orchestrate.md「作業の区切りごとの最終応答」「セッションの切り替え」)
+- 作業の区切りごとに「完了・実行指定/確認AI・モデル・effort・次のタスク(担当。人間作業があれば先出し)・セッション(継続可 / 切り替え推奨)」を最終応答で明示する。フェーズの区切りではさらに、残り差分・次に人間がやる作業・次フェーズへ入ってよいか(開始可 / 開始可(推奨作業あり) / 保留)を明示する(正本: orchestrate.md「作業の区切りごとの最終応答」「セッションの切り替え」)
 
 STOP 条件(該当したら進めずユーザーに報告):
 
@@ -49,5 +49,5 @@ STOP 条件(該当したら進めずユーザーに報告):
 - リサーチのテーマ・ブリーフの承認 / 本格リサーチの採用・不採用・保留の最終判断
 - アイデアの採用・見送り / 仕様書の「確定」
 - 技術スタックの承認(仕様書の執筆前)
-- 初回公開・リリース / 費用が発生する操作(push・確立済みデプロイの再実行は自律で行う)
+- 初回公開・リリース / 費用が発生する操作 / `docs/status.md` で自動許可されていない push・再デプロイ
 - フェーズを飛ばす判断 / 新しいライブラリ・外部サービスの導入

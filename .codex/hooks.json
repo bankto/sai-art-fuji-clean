@@ -2,14 +2,26 @@
   "hooks": {
     "PermissionRequest": [
       {
-        "command": "sh .agent-hooks/agent-alert.sh --source Codex --event PermissionRequest",
-        "commandWindows": "powershell.exe -NoProfile -STA -File .agent-hooks/agent-alert.ps1 -Source Codex -Event PermissionRequest"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$(git rev-parse --show-toplevel)/.agent-hooks/agent-alert.sh\" --source Codex --event PermissionRequest",
+            "commandWindows": "powershell.exe -NoProfile -STA -Command \"$root = git rev-parse --show-toplevel; & (Join-Path $root '.agent-hooks/agent-alert.ps1') -Source Codex -Event PermissionRequest\"",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "Stop": [
       {
-        "command": "sh .agent-hooks/agent-alert.sh --source Codex --event Stop",
-        "commandWindows": "powershell.exe -NoProfile -STA -File .agent-hooks/agent-alert.ps1 -Source Codex -Event Stop"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$(git rev-parse --show-toplevel)/.agent-hooks/agent-alert.sh\" --source Codex --event Stop",
+            "commandWindows": "powershell.exe -NoProfile -STA -Command \"$root = git rev-parse --show-toplevel; & (Join-Path $root '.agent-hooks/agent-alert.ps1') -Source Codex -Event Stop\"",
+            "timeout": 15
+          }
+        ]
       }
     ]
   }
