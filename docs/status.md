@@ -1,6 +1,6 @@
 # 進行状況ダッシュボード
 
-最終更新: 2026-07-12（テンプレート 2026.07.12.2 取り込み）
+最終更新: 2026-07-12（本番同等認識UXを push・Pages再デプロイ待ち）
 
 このファイルは再開用の短いダッシュボード(目安: 全体120行まで)。状態+1行要約+成果物へのリンクだけを書き、詳細の転記と節の新設はしない。履歴系2節(決定事項ログ / 直近のAI実行ログ)はデータ行20行を超える前に `docs/history/YYYY-MM.md` へ移す(運用の正本: `docs/workflows/orchestrate.md`「docs/status.md の運用」)。
 
@@ -34,7 +34,7 @@
 - ブランチ / upstream: main / origin/main
 - 最後に成功した検証コマンド・日時: `npm run lint` / `npm run build` (2026-07-12)
 - ブロッカー / 担当: なし
-- 再開条件・次に実行する具体的操作: ユーザー承認後にcommit / push / Pages再デプロイし、人間が更新後URLをiPhone Safari / Android Chromeで確認する。対象はカメラ起動・自動認識バッジ更新・生成。URL/QR/NFC/AR/レーザー導線は一時非表示
+- 再開条件・次に実行する具体的操作: `ec3a992` push済み。Pages再デプロイ後、人間が更新後URLでカメラ起動・自動認識・生成を確認。URL/QR/NFC/AR/レーザー導線は一時非表示
 
 ブロッカーが無ければ「なし」。`ブロック中`・`中断`では、次のセッションが追加質問なしで再開できる粒度まで書く。
 
@@ -88,6 +88,7 @@
 | 2026-07-12 | テンプレート 2026.07.12.1〜2026.07.12.2 取り込み(単体実行) | Codex / 既定 / 既定 | Codex / 不明 / 不明 | ルール系ファイル更新、status棚卸し、`.template-version`更新。Claude CLIのJSON・`modelUsage`検証成功。commitは未実施 |
 | 2026-07-12 | Claude CLI実行確認モデル取得テスト | Claude Code / haiku / medium | Claude Code / claude-haiku-4-5-20251001 / medium | stdoutはJSON 1オブジェクト、`result=CLI_OK`、`modelUsage` 1件を確認 |
 | 2026-07-12 | camera-ar-gomi-demo 本番同等認識UX(単体実行) | Codex / 既定 / high | Codex / GPT-5 / high | 手動選択・デモ表記を廃止し、自動認識フォールバックを実装。lint/build成功。実機再確認待ち |
+| 2026-07-12 | push・再デプロイ(ユーザー承認) | Cursor / — / — | Cursor / — / — | `ec3a992` を `origin/main` へ push。Pages 再デプロイ待ち |
 
 
 
