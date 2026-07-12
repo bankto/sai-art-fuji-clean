@@ -9,6 +9,11 @@ const METADATA_PATH = `${import.meta.env.BASE_URL}models/metadata.json`;
 const LABELS_PATH = `${import.meta.env.BASE_URL}models/labels.txt`;
 const DEFAULT_LABELS = ['アルミ片', '廃プラスチック', '紙くず', '背景'];
 const CONFIDENCE_THRESHOLD = 0.55;
+const DEMO_CONFIDENCE_BY_LABEL: Record<string, number> = {
+  'アルミ片': 0.88,
+  '廃プラスチック': 0.84,
+  '紙くず': 0.79,
+};
 
 export class Recognizer {
   private tf: TfModule | undefined;
@@ -48,8 +53,8 @@ export class Recognizer {
     const isUnrecognized = normalizedLabel === '未認識';
     return {
       objectLabel: normalizedLabel,
-      confidence: isUnrecognized ? 0.18 : 0.92,
-      modelVersion: 'demo-stub-v1',
+      confidence: isUnrecognized ? 0.18 : (DEMO_CONFIDENCE_BY_LABEL[normalizedLabel] ?? 0.75),
+      modelVersion: 'demo-stub-v2',
       recognizedAt: new Date().toISOString(),
       mode: 'demo',
       status: isUnrecognized ? 'unrecognized' : 'recognized',

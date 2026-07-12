@@ -18,6 +18,9 @@ import { canWriteWebNfc, getNfcFallbackMessage, writeUrlToNfc } from './nfc';
 import { registerServiceWorker } from './pwa';
 
 const recognitionIntervalMs = 1500;
+// 実機フィードバック対応中は、将来検証用の導線だけをUIから一時的に隠す。
+// 実装とDOMは残しているため、再開時はこのフラグとHTMLの hidden を戻す。
+const deferredFeaturesEnabled = false;
 
 class CameraArGomiDemo {
   private readonly recognizer = new Recognizer();
@@ -44,6 +47,8 @@ class CameraArGomiDemo {
   private readonly video = query<HTMLVideoElement>('#camera-video');
   private readonly cameraMessage = query<HTMLElement>('#camera-message');
   private readonly demoLabelSelect = query<HTMLSelectElement>('#demo-label-select');
+  private readonly demoControls = query<HTMLElement>('#demo-controls');
+  private readonly recognitionMode = query<HTMLElement>('#recognition-mode');
   private readonly recognitionLabel = query<HTMLElement>('#recognition-label');
   private readonly recognitionConfidence = query<HTMLElement>('#recognition-confidence');
   private readonly artworkLabel = query<HTMLElement>('#artwork-label');
@@ -73,7 +78,13 @@ class CameraArGomiDemo {
     const arParams = readArParams(window.location.hash);
     if (arParams) {
       this.loadArtwork(createArtworkSeedFromPlayback(arParams))
-        .then(() => this.showArView())
+        .then(() => {
+          if (deferredFeaturesEnabled) {
+            this.showArView();
+            return;
+          }
+          this.showToast('AR機能は現在一時非表示です。作品の通常再生を表示します。');
+        })
         .catch((error: unknown) => {
           this.showToast(messageFromError(error));
           this.showView('start');
@@ -107,6 +118,9 @@ class CameraArGomiDemo {
       this.startExperience().catch((error: unknown) => this.showCameraError(error));
     });
     query<HTMLButtonElement>('#recognize-button').addEventListener('click', () => {
+      this.runRecognition().catch((error: unknown) => this.showCameraError(error));
+    });
+    this.demoLabelSelect.addEventListener('change', () => {
       this.runRecognition().catch((error: unknown) => this.showCameraError(error));
     });
     query<HTMLButtonElement>('#generate-button').addEventListener('click', () => {
@@ -171,7 +185,13 @@ class CameraArGomiDemo {
       const arParams = readArParams(window.location.hash);
       if (arParams) {
         this.loadArtwork(createArtworkSeedFromPlayback(arParams))
-          .then(() => this.showArView())
+          .then(() => {
+            if (deferredFeaturesEnabled) {
+              this.showArView();
+              return;
+            }
+            this.showToast('AR機能は現在一時非表示です。作品の通常再生を表示します。');
+          })
           .catch((error: unknown) => this.showToast(messageFromError(error)));
         return;
       }
@@ -208,6 +228,9 @@ class CameraArGomiDemo {
     this.stream = await startCamera(this.video);
     const mode = await this.recognizer.init();
     this.status.textContent = mode === 'model' ? 'TF.js model' : 'Demo mode';
+    this.demoControls.classList.toggle('hidden', mode === 'model');
+    this.recognitionMode.textContent = mode === 'model' ? 'モデル認識' : 'デモ・手動選択';
+    this.recognitionMode.classList.toggle('demo', mode === 'demo');
     this.showView('camera');
     await this.runRecognition();
     this.startRecognitionLoop();
@@ -226,10 +249,13 @@ class CameraArGomiDemo {
     const result = await this.recognizer.recognize(this.video, this.demoLabelSelect.value);
     this.currentRecognition = result;
     this.recognitionLabel.textContent = result.objectLabel;
-    this.recognitionConfidence.textContent = `${Math.round(result.confidence * 100)}%`;
+    this.recognitionConfidence.textContent =
+      result.mode === 'demo'
+        ? `デモ固定値 ${Math.round(result.confidence * 100)}%`
+        : `${Math.round(result.confidence * 100)}%`;
     this.cameraMessage.textContent =
       result.mode === 'demo'
-        ? 'デモモード: public/models にモデルを置くと自動認識へ切り替わります。'
+        ? 'モデル未配置のためデモ中です。下の「デモ用の種類」で対象を手動選択して、生成を試してください。'
         : `モデル認識: ${result.modelVersion}`;
   }
 
@@ -300,6 +326,10 @@ class CameraArGomiDemo {
   }
 
   private openArRoute(): void {
+    if (!deferredFeaturesEnabled) {
+      this.showToast('AR機能は現在一時非表示です。');
+      return;
+    }
     if (!this.currentArtwork) {
       this.showToast('ARに渡す作品がありません。');
       return;
@@ -399,6 +429,7 @@ class CameraArGomiDemo {
     Object.entries(this.views).forEach(([name, element]) => {
       element.classList.toggle('hidden', name !== viewName);
     });
+    document.body.dataset.activeView = viewName;
   }
 
   private showCameraError(error: unknown): void {

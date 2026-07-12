@@ -13,11 +13,23 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
   background: #101312;
+}
+
+body[data-active-view="camera"],
+body[data-active-view="artwork"] {
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 button,
@@ -48,9 +60,11 @@ button:active {
 
 .app-shell {
   width: min(1180px, 100%);
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   margin: 0 auto;
-  padding: 16px;
+  padding: 0 16px max(12px, env(safe-area-inset-bottom));
+  overflow: hidden;
 }
 
 .topbar {
@@ -58,7 +72,8 @@ button:active {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: max(12px, env(safe-area-inset-top)) 0 14px;
+  min-height: 78px;
+  padding: max(10px, env(safe-area-inset-top)) 0 10px;
 }
 
 .topbar h1,
@@ -94,7 +109,8 @@ button:active {
 }
 
 .view {
-  min-height: calc(100vh - 94px);
+  min-height: calc(100vh - 90px);
+  min-height: calc(100dvh - 90px);
 }
 
 .hidden {
@@ -154,20 +170,27 @@ button:active {
   align-content: start;
 }
 
+.camera-view {
+  height: calc(100vh - 90px - env(safe-area-inset-bottom));
+  height: calc(100dvh - 90px - env(safe-area-inset-bottom));
+  min-height: 0;
+}
+
 .camera-stage {
   position: relative;
   overflow: hidden;
   width: 100%;
-  min-height: 58vh;
+  height: 100%;
+  min-height: 0;
   border: 1px solid #29312f;
   border-radius: 8px;
   background: #080a09;
 }
 
 .camera-stage video {
+  display: block;
   width: 100%;
   height: 100%;
-  min-height: 58vh;
   object-fit: cover;
 }
 
@@ -181,8 +204,9 @@ button:active {
 
 .recognition-badge {
   position: absolute;
+  z-index: 4;
+  top: 14px;
   right: 14px;
-  bottom: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -193,6 +217,20 @@ button:active {
   background: rgba(16, 19, 18, 0.82);
   color: #f7f5ec;
   backdrop-filter: blur(8px);
+}
+
+.mode-chip {
+  border-radius: 999px;
+  padding: 4px 7px;
+  background: #2d3633;
+  color: #d8d6c9;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.mode-chip.demo {
+  background: #7c3f00;
+  color: #fff2d4;
 }
 
 .recognition-badge span,
@@ -211,11 +249,41 @@ button:active {
 }
 
 .control-band {
+  position: absolute;
+  right: 12px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  left: 12px;
+  z-index: 6;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 10px;
   align-items: end;
   padding: 12px;
+  background: rgba(23, 27, 26, 0.94);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(12px);
+}
+
+.camera-message {
+  position: absolute;
+  right: 14px;
+  bottom: 134px;
+  left: 14px;
+  z-index: 5;
+  margin: 0;
+  border-radius: 8px;
+  padding: 9px 11px;
+  background: rgba(8, 10, 9, 0.78);
+  color: #f2f0e6;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+.field small {
+  color: #cbc7b8;
+  font-size: 0.72rem;
+  line-height: 1.35;
 }
 
 .field,
@@ -257,6 +325,22 @@ input[type="range"] {
   align-items: start;
 }
 
+.artwork-view {
+  height: calc(100vh - 90px - env(safe-area-inset-bottom));
+  height: calc(100dvh - 90px - env(safe-area-inset-bottom));
+  min-height: 0;
+}
+
+.artwork-view .artwork-layout {
+  min-height: 0;
+  height: 100%;
+}
+
+.artwork-view .canvas-wrap {
+  height: 100%;
+  align-items: center;
+}
+
 .canvas-wrap {
   display: grid;
   justify-items: center;
@@ -264,6 +348,7 @@ input[type="range"] {
   border-radius: 8px;
   padding: 10px;
   background: #080a09;
+  min-height: 0;
 }
 
 #artwork-canvas {
@@ -271,6 +356,8 @@ input[type="range"] {
   width: min(100%, 960px);
   aspect-ratio: 1;
   border-radius: 6px;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 .tool-panel {
@@ -355,9 +442,40 @@ input[type="range"] {
 }
 
 @media (max-width: 860px) {
-  .artwork-layout,
   .share-band {
     grid-template-columns: 1fr;
+  }
+
+  .artwork-view .artwork-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .artwork-view .canvas-wrap {
+    align-items: center;
+  }
+
+  .artwork-view #artwork-canvas {
+    width: auto;
+    max-width: 100%;
+  }
+
+  .artwork-view .tool-panel {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .artwork-view .meta-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .artwork-view .meta-grid div {
+    padding-bottom: 6px;
+  }
+
+  .artwork-view .meta-grid strong {
+    font-size: 0.84rem;
   }
 
   .share-band {
@@ -373,27 +491,98 @@ input[type="range"] {
 
 @media (max-width: 620px) {
   .app-shell {
-    padding: 12px;
+    padding: 0 10px max(8px, env(safe-area-inset-bottom));
   }
 
   .topbar {
-    align-items: flex-start;
+    min-height: 68px;
+    align-items: center;
+  }
+
+  .topbar .eyebrow {
+    display: none;
+  }
+
+  .topbar h1 {
+    margin-top: 0;
+    font-size: 0.96rem;
+  }
+
+  .status-pill {
+    min-width: 0;
+    padding: 7px 9px;
+    font-size: 0.72rem;
+  }
+
+  .view {
+    min-height: calc(100vh - 78px);
+    min-height: calc(100dvh - 78px);
+  }
+
+  .camera-view,
+  .artwork-view {
+    height: calc(100vh - 78px - env(safe-area-inset-bottom));
+    height: calc(100dvh - 78px - env(safe-area-inset-bottom));
   }
 
   .control-band {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 9px;
   }
 
-  .control-band button,
+  .control-band .field {
+    grid-column: 1 / -1;
+  }
+
   .transport-row button,
-  .action-row button,
   .share-band button {
     width: 100%;
+  }
+
+  .control-band button {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: 52px;
+    touch-action: manipulation;
+  }
+
+  .camera-message {
+    bottom: 200px;
+    font-size: 0.76rem;
+  }
+
+  .recognition-badge {
+    left: 12px;
+    right: auto;
+    max-width: calc(100% - 24px);
+    flex-wrap: wrap;
+  }
+
+  .artwork-view .transport-row,
+  .artwork-view .action-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .artwork-view .transport-row {
+    grid-template-columns: auto auto minmax(0, 1fr);
+  }
+
+  .artwork-view .transport-row button,
+  .artwork-view .action-row button {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 9px;
+    font-size: 0.86rem;
   }
 
   .volume-control,
   .volume-control input {
     width: 100%;
+    min-width: 0;
   }
 
   .start-copy h2 {

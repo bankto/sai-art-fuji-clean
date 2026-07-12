@@ -45,26 +45,26 @@
             <video id="camera-video" autoplay muted playsinline></video>
             <div class="camera-frame" aria-hidden="true"></div>
             <div class="recognition-badge">
+              <span class="mode-chip" id="recognition-mode">準備中</span>
               <span id="recognition-label">未認識</span>
               <strong id="recognition-confidence">0%</strong>
             </div>
+            <p class="camera-message" id="camera-message" role="status"></p>
+            <div class="control-band">
+              <label class="field" id="demo-controls">
+                <span>デモ用の種類（手動選択）</span>
+                <small>モデルが無いときは、ここで種類を選んで認識結果を切り替えます。</small>
+                <select id="demo-label-select">
+                  <option value="アルミ片">アルミ片</option>
+                  <option value="廃プラスチック">廃プラスチック</option>
+                  <option value="紙くず">紙くず</option>
+                  <option value="未認識">未認識</option>
+                </select>
+              </label>
+              <button class="secondary-button" id="recognize-button" type="button">認識更新</button>
+              <button class="primary-button" id="generate-button" type="button">生成</button>
+            </div>
           </div>
-
-          <div class="control-band">
-            <label class="field">
-              <span>デモラベル</span>
-              <select id="demo-label-select">
-                <option value="アルミ片">アルミ片</option>
-                <option value="廃プラスチック">廃プラスチック</option>
-                <option value="紙くず">紙くず</option>
-                <option value="未認識">未認識</option>
-              </select>
-            </label>
-            <button class="secondary-button" id="recognize-button" type="button">認識更新</button>
-            <button class="primary-button" id="generate-button" type="button">生成</button>
-          </div>
-
-          <p class="message" id="camera-message" role="status"></p>
         </section>
 
         <section class="view artwork-view hidden" id="artwork-view" aria-label="生成作品">
@@ -102,12 +102,12 @@
                 <button class="secondary-button" id="regenerate-button" type="button">再生成</button>
                 <button class="secondary-button" id="rescan-button" type="button">撮り直す</button>
                 <button class="secondary-button" id="save-png-button" type="button">PNG保存</button>
-                <button class="primary-button" id="open-ar-button" type="button">AR検証</button>
+                <button class="primary-button deferred-feature hidden" id="open-ar-button" type="button" data-feature="deferred">AR検証</button>
               </div>
             </div>
           </div>
 
-          <div class="takeaway-layout">
+          <div class="takeaway-layout deferred-feature hidden" data-feature="deferred">
             <div class="share-band">
               <div>
                 <p class="eyebrow">Takeaway</p>
