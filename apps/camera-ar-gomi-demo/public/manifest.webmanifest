@@ -1,7 +1,7 @@
 {
-  "name": "camera-ar-gomi-demo",
-  "short_name": "Gomi AR",
-  "description": "カメラ認識、生成作品、NFC/QR持ち帰り、画像ターゲットARを確認する検証用デモ",
+  "name": "GOMI ART CAMERA",
+  "short_name": "GOMI ART",
+  "description": "カメラで対象物を認識し、音とビジュアルの作品を生成します",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

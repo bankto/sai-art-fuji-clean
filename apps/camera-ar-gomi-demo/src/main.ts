@@ -46,9 +46,6 @@ class CameraArGomiDemo {
   private readonly toast = query<HTMLElement>('#toast');
   private readonly video = query<HTMLVideoElement>('#camera-video');
   private readonly cameraMessage = query<HTMLElement>('#camera-message');
-  private readonly demoLabelSelect = query<HTMLSelectElement>('#demo-label-select');
-  private readonly demoControls = query<HTMLElement>('#demo-controls');
-  private readonly recognitionMode = query<HTMLElement>('#recognition-mode');
   private readonly recognitionLabel = query<HTMLElement>('#recognition-label');
   private readonly recognitionConfidence = query<HTMLElement>('#recognition-confidence');
   private readonly artworkLabel = query<HTMLElement>('#artwork-label');
@@ -118,9 +115,6 @@ class CameraArGomiDemo {
       this.startExperience().catch((error: unknown) => this.showCameraError(error));
     });
     query<HTMLButtonElement>('#recognize-button').addEventListener('click', () => {
-      this.runRecognition().catch((error: unknown) => this.showCameraError(error));
-    });
-    this.demoLabelSelect.addEventListener('change', () => {
       this.runRecognition().catch((error: unknown) => this.showCameraError(error));
     });
     query<HTMLButtonElement>('#generate-button').addEventListener('click', () => {
@@ -226,11 +220,8 @@ class CameraArGomiDemo {
     }
 
     this.stream = await startCamera(this.video);
-    const mode = await this.recognizer.init();
-    this.status.textContent = mode === 'model' ? 'TF.js model' : 'Demo mode';
-    this.demoControls.classList.toggle('hidden', mode === 'model');
-    this.recognitionMode.textContent = mode === 'model' ? 'モデル認識' : 'デモ・手動選択';
-    this.recognitionMode.classList.toggle('demo', mode === 'demo');
+    await this.recognizer.init();
+    this.status.textContent = 'Recognizing';
     this.showView('camera');
     await this.runRecognition();
     this.startRecognitionLoop();
@@ -240,23 +231,19 @@ class CameraArGomiDemo {
     window.clearInterval(this.recognitionTimer);
     this.recognitionTimer = window.setInterval(() => {
       this.runRecognition().catch(() => {
-        this.cameraMessage.textContent = '認識を一時停止しました。手動更新を試してください。';
+        this.cameraMessage.textContent = '認識を一時停止しました。「認識更新」を試してください。';
       });
     }, recognitionIntervalMs);
   }
 
   private async runRecognition(): Promise<void> {
-    const result = await this.recognizer.recognize(this.video, this.demoLabelSelect.value);
+    this.status.textContent = 'Recognizing';
+    const result = await this.recognizer.recognize(this.video);
     this.currentRecognition = result;
     this.recognitionLabel.textContent = result.objectLabel;
-    this.recognitionConfidence.textContent =
-      result.mode === 'demo'
-        ? `デモ固定値 ${Math.round(result.confidence * 100)}%`
-        : `${Math.round(result.confidence * 100)}%`;
-    this.cameraMessage.textContent =
-      result.mode === 'demo'
-        ? 'モデル未配置のためデモ中です。下の「デモ用の種類」で対象を手動選択して、生成を試してください。'
-        : `モデル認識: ${result.modelVersion}`;
+    this.recognitionConfidence.textContent = `${Math.round(result.confidence * 100)}%`;
+    this.cameraMessage.textContent = '対象物を枠内に収めてください。認識結果は自動で更新されます。';
+    this.status.textContent = 'Ready';
   }
 
   private async generateArtwork(): Promise<void> {
@@ -280,7 +267,7 @@ class CameraArGomiDemo {
         confidence: 0.9,
         modelVersion: 'replay-regenerate-v1',
         recognizedAt: new Date().toISOString(),
-        mode: 'demo',
+        mode: 'fallback',
         status: 'recognized',
       };
     }

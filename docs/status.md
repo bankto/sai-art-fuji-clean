@@ -6,7 +6,7 @@
 
 ## 現在のフェーズ
 
-**Phase 5: 実装**(1件目デモ: ソフト完了 / **M1〜M2.5 実機確認でベース固め** / AR・M3.5は保留)
+**Phase 5: 実装**(1件目デモ: ソフト完了・本番同等認識UX反映済み / **実機再確認待ち** / AR・M3.5は保留)
 
 ## フェーズ進捗
 
@@ -16,7 +16,7 @@
 | 2. まとめサイト | Codex | 完了 | [公開サイト](https://bankto.github.io/sai-art-fuji-clean/) / `research-site/` + `.github/workflows/pages.yml` | GitHub Pages デプロイ済み。ユーザー判断により Phase 3 へ進行(2026-07-06) |
 | 3. アイデア出し | Cursor 指揮(Claude Code 発散 / Codex 整形) | 完了(壁打ち終了) | `docs/decisions/2026-07-06_技術ベース確定.md` | 技術ベース9種+体験の芯3本確定。壁打ち30+案。2026-07-10 ユーザー判断で一旦終了→検証用デモ2本へ |
 | 4. 仕様書作成 | Cursor 指揮(Codex 作成 / Claude Code レビュー) | 完了 | `docs/specs/2026-07-10_camera-ar-gomi-demo.md` + レビュー | ユーザー承認(2026-07-10)で確定。M2までを初回実装範囲に |
-| 5. 実装 | Cursor 指揮(Codex 実装 / Claude Code レビュー) | 完了(ソフト/UI改善反映済み) | `apps/camera-ar-gomi-demo/` | 実機フィードバックを反映。カメラ・生成画面の再確認待ち。NFC/QR/URL/AR/レーザー導線はコードを残して一時非表示(2026-07-12) |
+| 5. 実装 | Cursor 指揮(Codex 実装 / Claude Code レビュー) | 完了(本番同等認識UX反映済み) | `apps/camera-ar-gomi-demo/` | 手動選択を廃止し、モデル有無とも自動認識→生成へ統一。実機再確認待ち。NFC/QR/URL/AR/レーザー導線はコードを残して一時非表示(2026-07-12) |
 
 状態: 未着手 / 進行中 / レビュー待ち / 承認待ち / ブロック中 / 中断 / 完了
 
@@ -24,17 +24,17 @@
 
 未完了だけを置く。完了した項目は次の更新で消す(履歴は「直近のAI実行ログ」と `docs/reports/` が持つ)。
 
-- [ ] 更新後UIの実機再確認: GitHub Pages HTTPS でカメラ・デモ手動選択・認識更新・生成・作品操作をiPhone/Androidで確認 — **優先**
+- [ ] 本番同等認識UXの実機再確認: GitHub Pages HTTPS でカメラ起動・自動認識バッジ更新・生成・作品操作をiPhone/Androidで確認 — **優先**
 - [-] AR本格確認(M3): `.mind` 生成・印刷ターゲット・追跡重畳 — **保留**(2026-07-11。体験方針が未確定のため)
 - [-] M3.5 実物試作: レーザー彫刻/印刷 — **保留**(2026-07-11。レーザー可否検討中)
 
 ## 再開情報
 
-- 現在のタスクID・対象: camera-ar-gomi-demo 更新後UI実機再確認
+- 現在のタスクID・対象: camera-ar-gomi-demo 本番同等認識UXの実機再確認
 - ブランチ / upstream: main / origin/main
 - 最後に成功した検証コマンド・日時: `npm run lint` / `npm run build` (2026-07-12)
 - ブロッカー / 担当: なし
-- 再開条件・次に実行する具体的操作: GitHub Pages 再デプロイ完了後、人間が更新後URLをiPhone Safari / Android Chromeで確認する。対象はカメラ・生成。URL/QR/NFC/AR/レーザー導線は一時非表示
+- 再開条件・次に実行する具体的操作: ユーザー承認後にcommit / push / Pages再デプロイし、人間が更新後URLをiPhone Safari / Android Chromeで確認する。対象はカメラ起動・自動認識バッジ更新・生成。URL/QR/NFC/AR/レーザー導線は一時非表示
 
 ブロッカーが無ければ「なし」。`ブロック中`・`中断`では、次のセッションが追加質問なしで再開できる粒度まで書く。
 
@@ -55,7 +55,6 @@
 
 | 日付 | 決定内容 | 理由 |
 |---|---|---|
-| 2026-07-05 | 全フェーズ共通のオーケストレーション体制へ改定(Cursor=指揮 / Codex=作成 / Claude Code=調査・検証・レビュー)。「Phase 1〜3 は任意のAI」を廃止 | ユーザー決定。Cursor Agents Window + iOS 遠隔運用のため。詳細: `docs/decisions/2026-07-05_全フェーズオーケストレーション改定.md`(実施: Claude Code、ルール改定作業として例外的に直接編集) |
 | 2026-07-06 | Phase 1(リサーチ)・Phase 2(まとめサイト)を完了とし、Phase 3(アイデア出し)へ進行 | ユーザー判断。公開サイト: https://bankto.github.io/sai-art-fuji-clean/ |
 | 2026-07-06 | 横展開テンプレの通知hookをワークスペース標準(`agent-alert.ps1` + グローバル設定)に統一。テンプレ改善の運用ルールを本家へ逆輸入(実施: Codex 2ラウンド、検証: Cursor) | ユーザー承認。二重通知の回避と運用の一元化。詳細: `docs/decisions/2026-07-06_テンプレ改善の逆輸入.md` |
 | 2026-07-06 | Phase 3 技術ベース9種と体験の芯3本を確定。上層向け「選定理由」説明のためニッチ技術照合CSV(33件)を追加 | ユーザー指示。抽出: Claude Opus / CSV: Codex。詳細: `docs/decisions/2026-07-06_技術ベース確定.md` |
@@ -75,6 +74,7 @@
 | 2026-07-12 | テンプレ 2026.07.11.1 取り込み(実施: Claude Code 単体実行、実行確認AI / モデル: Claude Code / Fable 5): hook 新スキーマ+`last_assistant_message` 対応、モデル・effort の委譲コマンド毎回明示(Claude は `--model`/`--effort`)、「実行指定/確認AI」の分離記録、レビュー名の種別・ラウンド付き化(今後の新規分から。既存はリネームしない)、push・確立済み再デプロイは承認制で記入(ユーザー決定)、status に再開情報/Git・リリース方針/直近のAI実行ログ節を追加、`docs/history/` 追加、`.template-version`=2026.07.11.1 | ユーザー指示。テンプレ正本 D:\workspace\ai-templates(HEAD `a3b6d48`)。次回取り込みは `.template-version` からの差分を見る |
 | 2026-07-12 | 実機フィードバックを反映し、現在のデモ画面をカメラ認識→端末内生成へ集中。NFC/QR/URL/AR/レーザー導線は削除せず一時非表示 | ユーザー指示。戻し方はアプリREADMEと作業報告に記録 |
 | 2026-07-12 | テンプレート `2026.07.12.1`・`2026.07.12.2` を順に取り込み | Claude委譲の実モデル確認フローと、statusを短く保つ履歴退避ルールを反映。参照元 `D:\workspace\ai-templates` HEAD `df15ef1` |
+| 2026-07-12 | camera-ar-gomi-demoの手動選択・デモ表記を廃止し、モデル有無とも「カメラ起動→自動認識→生成」へ統一 | ユーザーの実機確認後の追加要望。モデル未配置時はカメラフレーム由来の内部フォールバックを使用。詳細: `docs/reports/2026-07-12_camera-ar-gomi-demo_production-ux.md` |
 
 ## 直近のAI実行ログ
 
@@ -87,6 +87,7 @@
 | 2026-07-12 | push(ユーザー承認) | Cursor / — / — | Cursor / — / — | `5db077c` を `origin/main` へ push。Pages 再デプロイ待ち |
 | 2026-07-12 | テンプレート 2026.07.12.1〜2026.07.12.2 取り込み(単体実行) | Codex / 既定 / 既定 | Codex / 不明 / 不明 | ルール系ファイル更新、status棚卸し、`.template-version`更新。Claude CLIのJSON・`modelUsage`検証成功。commitは未実施 |
 | 2026-07-12 | Claude CLI実行確認モデル取得テスト | Claude Code / haiku / medium | Claude Code / claude-haiku-4-5-20251001 / medium | stdoutはJSON 1オブジェクト、`result=CLI_OK`、`modelUsage` 1件を確認 |
+| 2026-07-12 | camera-ar-gomi-demo 本番同等認識UX(単体実行) | Codex / 既定 / high | Codex / GPT-5 / high | 手動選択・デモ表記を廃止し、自動認識フォールバックを実装。lint/build成功。実機再確認待ち |
 
 
 

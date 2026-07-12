@@ -1,4 +1,4 @@
-export type RecognitionMode = 'model' | 'demo';
+export type RecognitionMode = 'model' | 'fallback';
 
 export interface RecognitionResult {
   objectLabel: string;

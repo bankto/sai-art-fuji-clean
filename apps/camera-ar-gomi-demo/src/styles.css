@@ -219,20 +219,6 @@ button:active {
   backdrop-filter: blur(8px);
 }
 
-.mode-chip {
-  border-radius: 999px;
-  padding: 4px 7px;
-  background: #2d3633;
-  color: #d8d6c9;
-  font-size: 0.68rem;
-  font-weight: 800;
-}
-
-.mode-chip.demo {
-  background: #7c3f00;
-  color: #fff2d4;
-}
-
 .recognition-badge span,
 .recognition-badge strong {
   overflow: hidden;
@@ -255,7 +241,7 @@ button:active {
   left: 12px;
   z-index: 6;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   align-items: end;
   padding: 12px;
@@ -280,20 +266,12 @@ button:active {
   pointer-events: none;
 }
 
-.field small {
-  color: #cbc7b8;
-  font-size: 0.72rem;
-  line-height: 1.35;
-}
-
-.field,
 .volume-control,
 .share-url {
   display: grid;
   gap: 7px;
 }
 
-.field span,
 .volume-control span,
 .share-url span,
 .meta-grid span {
@@ -529,10 +507,6 @@ input[type="range"] {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     padding: 9px;
-  }
-
-  .control-band .field {
-    grid-column: 1 / -1;
   }
 
   .transport-row button,
