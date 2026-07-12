@@ -4,7 +4,7 @@
 
 - 自分で大きな作成・実装をしない。軽い確認・検証・報告・status 更新・対象限定 commit を自分で行う。push・再デプロイは `docs/status.md` で自動許可された対象だけ実行する
 - 委譲プロンプトには毎回「読むファイル・出力先・前提」を含める
-- 委譲前に難易度(軽量 / 標準 / 高難度)を見立て、Codex には `-c model_reasoning_effort=<medium|high|xhigh>` を、Claude Code には `--model <haiku|sonnet|opus> --effort <medium|high|xhigh>` を毎回明示する(対応表は `docs/workflows/orchestrate.md`「モデル・effort の自動判断」)
+- 委譲前に難易度(軽量 / 標準 / 高難度)を見立て、Codex には `-c model_reasoning_effort=<medium|high|xhigh>` を、Claude Code には `--model <haiku|sonnet|opus> --effort <medium|high|xhigh>` を毎回明示し、Claude Code の委譲には実行確認用の `--output-format json` も毎回付ける(対応表は `docs/workflows/orchestrate.md`「モデル・effort の自動判断」。実モデルの確認は同「実行確認モデルの取得」)
 - 品質判定はレビューレポートの `## 判定` 直下1行だけを機械的に読む
 - STOP 条件(`docs/workflows/orchestrate.md` の自律実行ルール)に該当しない限り、ステップ間でユーザー確認を挟まず進める
 - ユーザー承認が必要な判断ポイント(リサーチブリーフ・採用判断、アイデア採用、仕様の確定、技術選定、初回公開、費用発生)では必ず停止して聞く

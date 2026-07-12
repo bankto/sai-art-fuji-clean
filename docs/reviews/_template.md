@@ -5,7 +5,7 @@
 - 対象: [リンク](../specs/xxxx.md または ../../apps/xxxx/)
 - ファイル名: 仕様=`YYYY-MM-DD_<slug>_spec-review_rN.md` / 実装=`YYYY-MM-DD_<slug>_mN_implement-review_rR.md`
 - 実行指定AI / モデル / effort: (例: Claude Code / sonnet / high。委譲コマンド・プロンプトの指定値)
-- 実行確認AI / モデル / effort: (CLI出力・hook等で確認できた値。確認不能・エイリアス解決不明なら「Claude Code / 不明 / high」)
+- 実行確認AI / モデル / effort: (CLI出力・hook等で確認できた値。確認不能・エイリアス解決不明なら「Claude Code / 不明 / high」。非対話委譲では委譲元(オーケストレーター)が stdout JSON・セッションログで確認してこの行を更新してよい)
 - ラウンド: 1(同じ対象の再レビューは 2, 3... と増やし、上記命名で必ず新しいファイルを作る)
 
 ## 総評(3行以内)
