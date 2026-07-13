@@ -115,7 +115,7 @@ class CameraArGomiDemo {
       this.startExperience().catch((error: unknown) => this.showCameraError(error));
     });
     query<HTMLButtonElement>('#recognize-button').addEventListener('click', () => {
-      this.runRecognition().catch((error: unknown) => this.showCameraError(error));
+      this.runRecognition({ force: true, announce: true }).catch((error: unknown) => this.showCameraError(error));
     });
     query<HTMLButtonElement>('#generate-button').addEventListener('click', () => {
       this.generateArtwork().catch((error: unknown) => this.showCameraError(error));
@@ -236,14 +236,17 @@ class CameraArGomiDemo {
     }, recognitionIntervalMs);
   }
 
-  private async runRecognition(): Promise<void> {
+  private async runRecognition(options: { force?: boolean; announce?: boolean } = {}): Promise<void> {
     this.status.textContent = 'Recognizing';
-    const result = await this.recognizer.recognize(this.video);
+    const result = await this.recognizer.recognize(this.video, { force: options.force });
     this.currentRecognition = result;
     this.recognitionLabel.textContent = result.objectLabel;
     this.recognitionConfidence.textContent = `${Math.round(result.confidence * 100)}%`;
-    this.cameraMessage.textContent = '対象物を枠内に収めてください。認識結果は自動で更新されます。';
+    this.cameraMessage.textContent = '';
     this.status.textContent = 'Ready';
+    if (options.announce) {
+      this.showToast(`認識を更新しました: ${result.objectLabel} ${Math.round(result.confidence * 100)}%`);
+    }
   }
 
   private async generateArtwork(): Promise<void> {

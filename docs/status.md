@@ -1,12 +1,12 @@
 # 進行状況ダッシュボード
 
-最終更新: 2026-07-12（本番同等認識UXを push・Pages再デプロイ待ち）
+最終更新: 2026-07-13（認識安定化を push・Pages再デプロイ待ち）
 
 このファイルは再開用の短いダッシュボード(目安: 全体120行まで)。状態+1行要約+成果物へのリンクだけを書き、詳細の転記と節の新設はしない。履歴系2節(決定事項ログ / 直近のAI実行ログ)はデータ行20行を超える前に `docs/history/YYYY-MM.md` へ移す(運用の正本: `docs/workflows/orchestrate.md`「docs/status.md の運用」)。
 
 ## 現在のフェーズ
 
-**Phase 5: 実装**(1件目デモ: ソフト完了・本番同等認識UX反映済み / **実機再確認待ち** / AR・M3.5は保留)
+**Phase 5: 実装**(1件目デモ: ソフト完了・認識安定化反映済み / **再デプロイ後の実機再確認待ち** / AR・M3.5は保留)
 
 ## フェーズ進捗
 
@@ -16,7 +16,7 @@
 | 2. まとめサイト | Codex | 完了 | [公開サイト](https://bankto.github.io/sai-art-fuji-clean/) / `research-site/` + `.github/workflows/pages.yml` | GitHub Pages デプロイ済み。ユーザー判断により Phase 3 へ進行(2026-07-06) |
 | 3. アイデア出し | Cursor 指揮(Claude Code 発散 / Codex 整形) | 完了(壁打ち終了) | `docs/decisions/2026-07-06_技術ベース確定.md` | 技術ベース9種+体験の芯3本確定。壁打ち30+案。2026-07-10 ユーザー判断で一旦終了→検証用デモ2本へ |
 | 4. 仕様書作成 | Cursor 指揮(Codex 作成 / Claude Code レビュー) | 完了 | `docs/specs/2026-07-10_camera-ar-gomi-demo.md` + レビュー | ユーザー承認(2026-07-10)で確定。M2までを初回実装範囲に |
-| 5. 実装 | Cursor 指揮(Codex 実装 / Claude Code レビュー) | 完了(本番同等認識UX反映済み) | `apps/camera-ar-gomi-demo/` | 手動選択を廃止し、モデル有無とも自動認識→生成へ統一。実機再確認待ち。NFC/QR/URL/AR/レーザー導線はコードを残して一時非表示(2026-07-12) |
+| 5. 実装 | Cursor 指揮(Codex 実装 / Claude Code レビュー) | 完了(認識安定化反映済み) | `apps/camera-ar-gomi-demo/` | 自動結果を4回連続確認で切替、手動更新は即時確定。push済み・再デプロイ後の実機再確認待ち。NFC/QR/URL/AR/レーザー導線は一時非表示 |
 
 状態: 未着手 / 進行中 / レビュー待ち / 承認待ち / ブロック中 / 中断 / 完了
 
@@ -24,17 +24,17 @@
 
 未完了だけを置く。完了した項目は次の更新で消す(履歴は「直近のAI実行ログ」と `docs/reports/` が持つ)。
 
-- [ ] 本番同等認識UXの実機再確認: GitHub Pages HTTPS でカメラ起動・自動認識バッジ更新・生成・作品操作をiPhone/Androidで確認 — **優先**
+- [ ] 再デプロイ後の実機再確認: GitHub Pages HTTPS でラベル保持・認識更新トースト・生成をiPhone/Androidで確認 — **優先**
 - [-] AR本格確認(M3): `.mind` 生成・印刷ターゲット・追跡重畳 — **保留**(2026-07-11。体験方針が未確定のため)
 - [-] M3.5 実物試作: レーザー彫刻/印刷 — **保留**(2026-07-11。レーザー可否検討中)
 
 ## 再開情報
 
-- 現在のタスクID・対象: camera-ar-gomi-demo 本番同等認識UXの実機再確認
+- 現在のタスクID・対象: camera-ar-gomi-demo 認識安定化の再デプロイと実機再確認
 - ブランチ / upstream: main / origin/main
-- 最後に成功した検証コマンド・日時: `npm run lint` / `npm run build` (2026-07-12)
+- 最後に成功した検証コマンド・日時: `npm run lint` / `npm run build` (2026-07-13)
 - ブロッカー / 担当: なし
-- 再開条件・次に実行する具体的操作: `ec3a992` push済み。Pages再デプロイ後、人間が更新後URLでカメラ起動・自動認識・生成を確認。URL/QR/NFC/AR/レーザー導線は一時非表示
+- 再開条件・次に実行する具体的操作: 認識安定化を push 済み。Pages再デプロイ後、人間が更新後URLでラベル保持・認識更新トースト・生成を確認。URL/QR/NFC/AR/レーザー導線は一時非表示
 
 ブロッカーが無ければ「なし」。`ブロック中`・`中断`では、次のセッションが追加質問なしで再開できる粒度まで書く。
 
@@ -75,6 +75,7 @@
 | 2026-07-12 | 実機フィードバックを反映し、現在のデモ画面をカメラ認識→端末内生成へ集中。NFC/QR/URL/AR/レーザー導線は削除せず一時非表示 | ユーザー指示。戻し方はアプリREADMEと作業報告に記録 |
 | 2026-07-12 | テンプレート `2026.07.12.1`・`2026.07.12.2` を順に取り込み | Claude委譲の実モデル確認フローと、statusを短く保つ履歴退避ルールを反映。参照元 `D:\workspace\ai-templates` HEAD `df15ef1` |
 | 2026-07-12 | camera-ar-gomi-demoの手動選択・デモ表記を廃止し、モデル有無とも「カメラ起動→自動認識→生成」へ統一 | ユーザーの実機確認後の追加要望。モデル未配置時はカメラフレーム由来の内部フォールバックを使用。詳細: `docs/reports/2026-07-12_camera-ar-gomi-demo_production-ux.md` |
+| 2026-07-13 | camera-ar-gomi-demoの自動認識を4回連続確認で安定化し、手動更新は現在フレームを即時確定 | 実機で種類・％が頻繁に変わり、更新操作の反応が分かりにくいというフィードバック。詳細: `docs/reports/2026-07-13_camera-ar-gomi-demo_recognition-stability.md` |
 
 ## 直近のAI実行ログ
 
@@ -89,6 +90,8 @@
 | 2026-07-12 | Claude CLI実行確認モデル取得テスト | Claude Code / haiku / medium | Claude Code / claude-haiku-4-5-20251001 / medium | stdoutはJSON 1オブジェクト、`result=CLI_OK`、`modelUsage` 1件を確認 |
 | 2026-07-12 | camera-ar-gomi-demo 本番同等認識UX(単体実行) | Codex / 既定 / high | Codex / GPT-5 / high | 手動選択・デモ表記を廃止し、自動認識フォールバックを実装。lint/build成功。実機再確認待ち |
 | 2026-07-12 | push・再デプロイ(ユーザー承認) | Cursor / — / — | Cursor / — / — | `ec3a992` を `origin/main` へ push。Pages 再デプロイ待ち |
+| 2026-07-13 | camera-ar-gomi-demo 認識安定化(単体実行) | Codex / 既定 / high | Codex / GPT-5 / high | 4回連続確認・信頼度抑制・手動即時更新・文言/タイトル/PWA更新。lint/build成功。commit・再デプロイ・実機確認待ち |
+| 2026-07-13 | push・再デプロイ(ユーザー承認) | Cursor / — / — | Cursor / — / — | 認識安定化を `origin/main` へ push。Pages 再デプロイ待ち |
 
 
 

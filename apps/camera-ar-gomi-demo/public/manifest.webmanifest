@@ -1,7 +1,7 @@
 {
-  "name": "GOMI ART CAMERA",
-  "short_name": "GOMI ART",
-  "description": "カメラで対象物を認識し、音とビジュアルの作品を生成します",
+  "name": "GOMI CAMERA",
+  "short_name": "GOMI CAMERA",
+  "description": "対象物をカメラで認識して作品を生成します",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

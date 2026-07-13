@@ -11,6 +11,12 @@ const DEFAULT_LABELS = ['アルミ片', '廃プラスチック', '紙くず', '�
 const FALLBACK_LABELS = DEFAULT_LABELS.slice(0, 3);
 const CONFIDENCE_THRESHOLD = 0.55;
 const FALLBACK_FRAME_SIZE = 16;
+const AUTO_SWITCH_CONFIRMATIONS = 4;
+const MAX_CONFIDENCE_STEP = 0.015;
+
+export type RecognizeOptions = {
+  force?: boolean;
+};
 
 export class Recognizer {
   private tf: TfModule | undefined;
@@ -19,8 +25,14 @@ export class Recognizer {
   private inputSize = 224;
   private mode: 'model' | 'fallback' = 'fallback';
   private readonly fallbackCanvas = document.createElement('canvas');
+  private stableResult: RecognitionResult | undefined;
+  private pendingLabel = '';
+  private pendingStatus: RecognitionResult['status'] | undefined;
+  private pendingCount = 0;
 
   async init(): Promise<'model' | 'fallback'> {
+    this.stableResult = undefined;
+    this.resetPendingResult();
     try {
       const probe = await fetch(MODEL_PATH, { cache: 'no-store' });
       if (!probe.ok) {
@@ -42,16 +54,62 @@ export class Recognizer {
     }
   }
 
-  async recognize(video: HTMLVideoElement): Promise<RecognitionResult> {
-    if (this.mode === 'model' && this.model && this.tf && video.videoWidth > 0) {
-      return this.recognizeWithModel(video);
-    }
+  async recognize(video: HTMLVideoElement, options: RecognizeOptions = {}): Promise<RecognitionResult> {
+    const rawResult =
+      this.mode === 'model' && this.model && this.tf && video.videoWidth > 0
+        ? await this.recognizeWithModel(video)
+        : this.recognizeWithFrameFallback(video);
 
-    return this.recognizeWithFrameFallback(video);
+    return this.stabilize(rawResult, options.force === true);
   }
 
   getMode(): 'model' | 'fallback' {
     return this.mode;
+  }
+
+  private stabilize(result: RecognitionResult, force: boolean): RecognitionResult {
+    if (force || !this.stableResult) {
+      this.stableResult = result;
+      this.resetPendingResult();
+      return result;
+    }
+
+    const isCurrentResult =
+      result.objectLabel === this.stableResult.objectLabel && result.status === this.stableResult.status;
+    if (isCurrentResult) {
+      this.resetPendingResult();
+      this.stableResult = {
+        ...result,
+        confidence: moveTowards(this.stableResult.confidence, result.confidence, MAX_CONFIDENCE_STEP),
+      };
+      return this.stableResult;
+    }
+
+    const isSamePendingResult = result.objectLabel === this.pendingLabel && result.status === this.pendingStatus;
+    if (isSamePendingResult) {
+      this.pendingCount += 1;
+    } else {
+      this.pendingLabel = result.objectLabel;
+      this.pendingStatus = result.status;
+      this.pendingCount = 1;
+    }
+
+    if (this.pendingCount >= AUTO_SWITCH_CONFIRMATIONS) {
+      this.stableResult = result;
+      this.resetPendingResult();
+      return result;
+    }
+
+    return {
+      ...this.stableResult,
+      recognizedAt: result.recognizedAt,
+    };
+  }
+
+  private resetPendingResult(): void {
+    this.pendingLabel = '';
+    this.pendingStatus = undefined;
+    this.pendingCount = 0;
   }
 
   private recognizeWithFrameFallback(video: HTMLVideoElement): RecognitionResult {
@@ -125,6 +183,11 @@ export class Recognizer {
       status,
     };
   }
+}
+
+function moveTowards(current: number, target: number, maxStep: number): number {
+  const difference = target - current;
+  return current + Math.max(-maxStep, Math.min(maxStep, difference));
 }
 
 async function loadLabels(): Promise<string[]> {
