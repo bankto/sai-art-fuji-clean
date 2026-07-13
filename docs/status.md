@@ -1,6 +1,6 @@
 # 進行状況ダッシュボード
 
-最終更新: 2026-07-13（2件目 local-map-gps-demo: ソフトウェア完了・実装レビュー承認。人間作業=現地キャリブ待ち）
+最終更新: 2026-07-13（2件目 local-map-gps-demo: push済・Pagesデプロイ待ち。人間作業=現地キャリブ）
 
 このファイルは再開用の短いダッシュボード(目安: 全体120行まで)。状態+1行要約+成果物へのリンクだけを書き、詳細の転記と節の新設はしない。履歴系2節(決定事項ログ / 直近のAI実行ログ)はデータ行20行を超える前に `docs/history/YYYY-MM.md` へ移す(運用の正本: `docs/workflows/orchestrate.md`「docs/status.md の運用」)。
 
@@ -23,7 +23,7 @@
 ## 直近のアクション
 
 - [ ] 2件目 local-map-gps-demo: 現地で基準点GPS測定 → `src/data/calibration.ts` / `zones.ts` 差し替え → 実機確認 — **人間作業待ち**
-- [ ] 2件目: commit / push / Pages公開 — **承認待ち**(ユーザー)
+- [x] 2件目: commit / push（`233f7df`）— Pagesデプロイ待ち
 - [ ] 認識モデル(Teachable Machine): 出張撮影 → 学習 → `public/models/` — **待ち(出張後)**
 - [-] AR本格確認(M3) / M3.5 レーザー — **保留**
 
@@ -76,3 +76,4 @@
 | 2026-07-13 | 仕様レビュー r2 | Claude Code / sonnet / medium | Claude Code / claude-sonnet-5 / medium | 承認 |
 | 2026-07-13 | local-map-gps-demo M1〜M3実装 | Codex / 既定 / high | Codex / gpt-5.6-sol / high | apps/ + pages.yml + report。lint/test/build成功 |
 | 2026-07-13 | 実装レビュー r1 | Claude Code / sonnet / high | Claude Code / claude-sonnet-5 / high | 承認。Mustなし |
+| 2026-07-13 | push・再デプロイ(ユーザー承認) | Cursor / — / — | Cursor / — / — | `233f7df` を origin/main へ。URL: …/local-map-gps-demo/ |
