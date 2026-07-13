@@ -114,9 +114,6 @@ class CameraArGomiDemo {
     query<HTMLButtonElement>('#start-button').addEventListener('click', () => {
       this.startExperience().catch((error: unknown) => this.showCameraError(error));
     });
-    query<HTMLButtonElement>('#recognize-button').addEventListener('click', () => {
-      this.runRecognition({ force: true, announce: true }).catch((error: unknown) => this.showCameraError(error));
-    });
     query<HTMLButtonElement>('#generate-button').addEventListener('click', () => {
       this.generateArtwork().catch((error: unknown) => this.showCameraError(error));
     });
@@ -231,22 +228,19 @@ class CameraArGomiDemo {
     window.clearInterval(this.recognitionTimer);
     this.recognitionTimer = window.setInterval(() => {
       this.runRecognition().catch(() => {
-        this.cameraMessage.textContent = '認識を一時停止しました。「認識更新」を試してください。';
+        this.cameraMessage.textContent = '認識を一時停止しました。カメラを対象物へ向けたままお待ちください。';
       });
     }, recognitionIntervalMs);
   }
 
-  private async runRecognition(options: { force?: boolean; announce?: boolean } = {}): Promise<void> {
+  private async runRecognition(): Promise<void> {
     this.status.textContent = 'Recognizing';
-    const result = await this.recognizer.recognize(this.video, { force: options.force });
+    const result = await this.recognizer.recognize(this.video);
     this.currentRecognition = result;
     this.recognitionLabel.textContent = result.objectLabel;
     this.recognitionConfidence.textContent = `${Math.round(result.confidence * 100)}%`;
     this.cameraMessage.textContent = '';
     this.status.textContent = 'Ready';
-    if (options.announce) {
-      this.showToast(`認識を更新しました: ${result.objectLabel} ${Math.round(result.confidence * 100)}%`);
-    }
   }
 
   private async generateArtwork(): Promise<void> {
