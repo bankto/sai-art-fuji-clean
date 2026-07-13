@@ -11,6 +11,7 @@ on:
       - "research-site/app.js"
       - "research-site/apps-script/**"
       - "apps/camera-ar-gomi-demo/**"
+      - "apps/local-map-gps-demo/**"
   workflow_dispatch:
 
 permissions:
@@ -32,13 +33,21 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: apps/camera-ar-gomi-demo/package-lock.json
+          cache-dependency-path: |
+            apps/camera-ar-gomi-demo/package-lock.json
+            apps/local-map-gps-demo/package-lock.json
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
       - name: Build camera AR demo
         working-directory: apps/camera-ar-gomi-demo
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build local map GPS demo
+        working-directory: apps/local-map-gps-demo
         run: |
           npm ci
           npm run build
@@ -61,6 +70,9 @@ jobs:
 
           mkdir -p public/camera-ar-gomi-demo
           cp -r apps/camera-ar-gomi-demo/dist/. public/camera-ar-gomi-demo/
+
+          mkdir -p public/local-map-gps-demo
+          cp -r apps/local-map-gps-demo/dist/. public/local-map-gps-demo/
 
           sed -i "s|__RESEARCH_SITE_DATA_API_URL__|${RESEARCH_SITE_DATA_API_URL}|g" public/index.html
 
