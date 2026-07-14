@@ -8,7 +8,7 @@ export class SoundEngine {
   private noise: any;
   private channel: any;
   private sequence: any;
-  private volume = 0.72;
+  private volume = 0.35;
   private isPlaying = false;
 
   async prepare(): Promise<void> {

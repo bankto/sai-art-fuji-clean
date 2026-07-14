@@ -1,6 +1,6 @@
 # 進行状況ダッシュボード
 
-最終更新: 2026-07-14（テンプレ改善提案4点を作成。Phase 5 は現地キャリブ・出張撮影待ちを継続）
+最終更新: 2026-07-14（camera-ar-gomi-demoの生成音声初期音量を35%へ調整。Phase 5 は現地キャリブ・出張撮影待ちを継続）
 
 このファイルは再開用の短いダッシュボード(目安: 全体120行まで)。状態+1行要約+成果物へのリンクだけを書き、詳細の転記と節の新設はしない。履歴系2節(決定事項ログ / 直近のAI実行ログ)はデータ行20行を超える前に `docs/history/YYYY-MM.md` へ移す(運用の正本: `docs/workflows/orchestrate.md`「docs/status.md の運用」)。
 
@@ -79,3 +79,4 @@
 | 2026-07-13 | push・再デプロイ(ユーザー承認) | Cursor / — / — | Cursor / — / — | `233f7df` を origin/main へ。URL: …/local-map-gps-demo/ |
 | 2026-07-14 | テンプレ改善提案(Claude視点) | Claude Code / sonnet / high | Claude Code / claude-sonnet-5 / high | `docs/template-improvements/2026-07-14_claude-code.md` |
 | 2026-07-14 | テンプレ改善提案の三者統合 | Codex / 既定 / high | Codex / gpt-5.6-sol / high | `docs/template-improvements/`(README・Cursor・Codex・統合) |
+| 2026-07-14 | camera-ar-gomi-demo 初期音量調整 | Codex / 既定 / medium | Codex / GPT-5 / medium | 初期音量35%。lint/build成功。`docs/reports/2026-07-14_camera-ar-gomi-demo-default-volume.md` |
