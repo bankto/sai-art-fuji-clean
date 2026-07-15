@@ -68,6 +68,7 @@
 | 日時 | タスク・ラウンド | 実行指定AI / モデル / effort | 実行確認AI / モデル / effort | 結果・成果物 |
 |---|---|---|---|---|
 | 2026-07-15 | local-map-gps-demo キャリブ差し替え | Codex / 既定 / high | Codex / gpt-5.6-sol / high | 6点実測+暫定5ゾーン。[報告](reports/2026-07-15_local-map-gps-demo_calibration.md)。lint/test11/build成功 |
+| 2026-07-15 | push・再デプロイ(ユーザー承認) | Cursor / — / — | Cursor / — / — | `a25f773` を origin/main へ。Pages成功。URL: …/local-map-gps-demo/ |
 | 2026-07-13 | camera-ar-gomi-demo 認識安定化 | Codex / 既定 / high | Codex / GPT-5 / high | 4回連続確認等。lint/build成功 |
 | 2026-07-13 | push・再デプロイ(ユーザー承認) | Cursor / — / — | Cursor / — / — | 認識安定化を origin/main へ |
 | 2026-07-13 | camera-ar-gomi-demo カメラUI整理 | Codex / 既定 / medium | Codex / GPT-5 / medium | 1ボタン化。lint/build成功 |
