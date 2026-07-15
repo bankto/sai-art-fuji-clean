@@ -1,12 +1,12 @@
 # 進行状況ダッシュボード
 
-最終更新: 2026-07-14（camera-ar-gomi-demo 初期音量35%を push・Pages再デプロイ。Phase 5 は現地キャリブ・出張撮影待ちを継続）
+最終更新: 2026-07-15（local-map-gps-demo キャリブ差し替えを push・Pages再デプロイ。現地実機確認待ち）
 
 このファイルは再開用の短いダッシュボード(目安: 全体120行まで)。状態+1行要約+成果物へのリンクだけを書き、詳細の転記と節の新設はしない。履歴系2節(決定事項ログ / 直近のAI実行ログ)はデータ行20行を超える前に `docs/history/YYYY-MM.md` へ移す(運用の正本: `docs/workflows/orchestrate.md`「docs/status.md の運用」)。
 
 ## 現在のフェーズ
 
-**Phase 5: 実装**(2件目 local-map-gps-demo: SW完了・**現地キャリブ待ち** / 1件目: 認識モデルは出張撮影待ち)
+**Phase 5: 実装**(2件目 local-map-gps-demo: キャリブ差し替え公開済・**現地実機確認待ち** / 1件目: 認識モデルは出張撮影待ち)
 
 ## フェーズ進捗
 
@@ -16,24 +16,24 @@
 | 2. まとめサイト | Codex | 完了 | [公開サイト](https://bankto.github.io/sai-art-fuji-clean/) | Pages デプロイ済み |
 | 3. アイデア出し | Cursor 指揮 | 完了 | `docs/decisions/2026-07-06_技術ベース確定.md` + 2件目アイデア | 検証用デモ2本へ |
 | 4. 仕様書作成 | Cursor 指揮 | 完了(2件目含む) | `docs/specs/2026-07-13_local-map-gps-demo.md` + r1/r2 | 2件目確定。1件目も確定済 |
-| 5. 実装 | Cursor 指揮 | 進行中 | `apps/local-map-gps-demo/` + `apps/camera-ar-gomi-demo/` | 2件目 M1〜M3 SW完了(レビュー承認)。1件目認識モデル待ち |
+| 5. 実装 | Cursor 指揮 | 進行中 | `apps/local-map-gps-demo/` + `apps/camera-ar-gomi-demo/` | 2件目 実測6点公開済・実機確認待ち。1件目認識モデル待ち |
 
 状態: 未着手 / 進行中 / レビュー待ち / 承認待ち / ブロック中 / 中断 / 完了
 
 ## 直近のアクション
 
+- [ ] 2件目 local-map-gps-demo: iPhone / Androidで位置ずれ・精度閾値を実機確認し、正式ゾーンを確定 — **人間作業待ち**
 - [ ] テンプレ改善提案: `docs/template-improvements/2026-07-14_consolidated.md` の Must と新バリアント方針を採否判断 — **人間判断待ち**
-- [ ] 2件目 local-map-gps-demo: 現地で基準点GPS測定 → `src/data/calibration.ts` / `zones.ts` 差し替え → 実機確認 — **人間作業待ち**
 - [ ] 認識モデル(Teachable Machine): 出張撮影 → 学習 → `public/models/` — **待ち(出張後)**
 - [-] AR本格確認(M3) / M3.5 レーザー — **保留**
 
 ## 再開情報
 
-- 現在のタスクID・対象: local-map-gps-demo 現地キャリブレーション（並走: 1件目認識モデルは出張待ち）
+- 現在のタスクID・対象: local-map-gps-demo 現地スマホ実機確認（並走: 1件目認識モデルは出張待ち）
 - ブランチ / upstream: main / origin/main
-- 最後に成功した検証コマンド・日時: `apps/local-map-gps-demo` で `npm run lint` / `npm run test`(11 pass) / `npm run build` (2026-07-13)
-- ブロッカー / 担当: 人間作業待ち（現地基準点の緯度経度測定）。ソフトウェアは完了
-- 再開条件・次に実行する具体的操作: READMEの「人間が行う現地作業」に沿って基準点を測定 → データ差し替えをAIへ依頼。公開する場合は commit/push を承認
+- 最後に成功した検証コマンド・日時: `apps/local-map-gps-demo` で `npm run lint` / `npm run test`(11 pass) / `npm run build` (2026-07-15)
+- ブロッカー / 担当: 人間作業待ち（現地実機確認・正式ゾーン確定）
+- 再開条件・次に実行する具体的操作: https://bankto.github.io/sai-art-fuji-clean/local-map-gps-demo/ で現地GPS確認。ずれが大きければ基準点の画像座標見直しをAIへ依頼。成果物: `docs/reports/2026-07-15_local-map-gps-demo_calibration.md`
 
 ## Git・リリース方針
 
@@ -61,11 +61,13 @@
 | 2026-07-13 | 認識モデル作業は出張撮影完了まで待ち | ユーザー判断。手順: `docs/decisions/2026-07-13_teachable-machine-shooting-checklist.md` |
 | 2026-07-13 | 2件目デモ=施設ローカルマップ×GPS。技術=自前マップ+Geolocation(Mapboxなし)。GitHub Pages同居 | ユーザー承認。詳細: `docs/decisions/2026-07-13_local-map-gps-demo.md` |
 | 2026-07-13 | 2件目仕様確定・M1〜M3実装完了。実装レビュー=承認。次は現地キャリブ | ユーザー「人間作業まで自律進行」+ r2/実装レビュー承認 |
+| 2026-07-15 | 注釈付き施設図の赤丸6点GPSをキャリブへ差し替え | ユーザー提供座標＋差し替え承認 |
 
 ## 直近のAI実行ログ
 
 | 日時 | タスク・ラウンド | 実行指定AI / モデル / effort | 実行確認AI / モデル / effort | 結果・成果物 |
 |---|---|---|---|---|
+| 2026-07-15 | local-map-gps-demo キャリブ差し替え | Codex / 既定 / high | Codex / gpt-5.6-sol / high | 6点実測+暫定5ゾーン。[報告](reports/2026-07-15_local-map-gps-demo_calibration.md)。lint/test11/build成功 |
 | 2026-07-13 | camera-ar-gomi-demo 認識安定化 | Codex / 既定 / high | Codex / GPT-5 / high | 4回連続確認等。lint/build成功 |
 | 2026-07-13 | push・再デプロイ(ユーザー承認) | Cursor / — / — | Cursor / — / — | 認識安定化を origin/main へ |
 | 2026-07-13 | camera-ar-gomi-demo カメラUI整理 | Codex / 既定 / medium | Codex / GPT-5 / medium | 1ボタン化。lint/build成功 |

@@ -1,24 +1,25 @@
 import type { CalibrationPoint, DemoPosition } from '../types';
 
 /**
- * 仮データ: 現地で測定した値ではありません。
- * 4点以上の最小二乗計算と画面フローを確認するための合成座標です。
- * 現地測定後、この配列だけを確定済みの基準点へ差し替えます。
+ * 現地測定済みの緯度経度と、注釈付き施設図の赤丸中心を対応させた基準点です。
+ * x / y は 765 x 632 px の施設図全体に対する正規化座標です。
  */
 export const calibrationPoints: readonly CalibrationPoint[] = [
-  { id: 'temp-nw', latitude: 35.001, longitude: 135.0, x: 0.08, y: 0.08 },
-  { id: 'temp-ne', latitude: 35.001, longitude: 135.001, x: 0.92, y: 0.08 },
-  { id: 'temp-se', latitude: 35.0, longitude: 135.001, x: 0.92, y: 0.92 },
-  { id: 'temp-sw', latitude: 35.0, longitude: 135.0, x: 0.08, y: 0.92 },
+  { id: 'cal-north-biogarden', latitude: 34.5781240, longitude: 133.9070370, x: 0.3608, y: 0.0981 },
+  { id: 'cal-parking', latitude: 34.5778714, longitude: 133.9070820, x: 0.2693, y: 0.144 },
+  { id: 'cal-central-rpf', latitude: 34.5775539, longitude: 133.9077844, x: 0.4889, y: 0.3703 },
+  { id: 'cal-plastic-yard', latitude: 34.5774286, longitude: 133.9077498, x: 0.4118, y: 0.4573 },
+  { id: 'cal-therapy-garden', latitude: 34.5766068, longitude: 133.9084378, x: 0.4549, y: 0.8022 },
+  { id: 'cal-plastic-plant', latitude: 34.5763724, longitude: 133.9075017, x: 0.5582, y: 0.7152 },
 ];
 
 /** 実GPSとは無関係な、画面確認専用の正規化座標です。 */
 export const demoPosition: DemoPosition = {
   id: 'demo-center-yard',
   label: 'デモ位置',
-  x: 0.46,
-  y: 0.52,
+  x: 0.48,
+  y: 0.55,
 };
 
-/** 現地実測で見直す仮の精度警告値です。 */
+/** 現地実機確認後に見直す仮の精度警告値です。 */
 export const lowAccuracyThresholdMeters = 50;
